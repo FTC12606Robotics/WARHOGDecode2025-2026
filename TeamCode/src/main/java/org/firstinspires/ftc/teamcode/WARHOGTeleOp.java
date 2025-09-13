@@ -15,6 +15,7 @@ public class WARHOGTeleOp extends LinearOpMode {
 
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry);
+        //Outtake = outtake = new Outtake(hardwareMap, telemetry);
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, baseSpeed, offset, modAngle;
@@ -44,7 +45,7 @@ public class WARHOGTeleOp extends LinearOpMode {
                 // currentGamepad1/2 are being copied from valid Gamepads.
             }
 
-            if(currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
+            /*if(currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
                 offset-=90;
             }
             if(currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
@@ -54,7 +55,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             if (offset==-90){offset=270;}
 
             telemetry.addData("Angle Offset", offset);
-            telemetry.update();
+            telemetry.update();*/
         }
 
         //drivetrain.setAngleOffset(offset); //We'll see if this works
@@ -90,6 +91,7 @@ public class WARHOGTeleOp extends LinearOpMode {
                     centricity = Drivetrain.Centricity.BOT;
                 }
             }
+            telemetry.addData("Centricity: ", centricity);
 
 
             //set up vectors
@@ -106,19 +108,15 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas);
-            for (double line:motorPowers){
+            //For drive motor debugging
+            /*for (double line:motorPowers){
                 telemetry.addLine( Double.toString(line) );
-            }
+            }*/
 
             //reset the angle
             if(resetDriveAngle){
                 drivetrain.resetAngleData(Drivetrain.AngleType.HEADING);
             }
-
-            modAngle = (drivetrain.getIMUAngleData(Drivetrain.AngleType.HEADING)/PI*180)%360;    //********Reposition or take out these 2 lines if not needed, figure out what nod angle is for*********
-            telemetry.addData("mod angle", modAngle);
-
-
 
 
             //end step
