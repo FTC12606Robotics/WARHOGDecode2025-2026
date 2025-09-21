@@ -6,16 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@TeleOp(name="WARHOGTeleOp", group="")
-public class WARHOGTeleOp extends LinearOpMode {
-    public WARHOGTeleOp() throws InterruptedException {}
+@TeleOp(name="WARHOGTeleOpPushbot", group="")
+public class WARHOGTeleOpPushbot extends LinearOpMode {
+    public WARHOGTeleOpPushbot() throws InterruptedException {}
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         //=====Set up classes=====
-        Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
-        //Outtake = outtake = new Outtake(hardwareMap, telemetry);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BHI260IMU");
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed;

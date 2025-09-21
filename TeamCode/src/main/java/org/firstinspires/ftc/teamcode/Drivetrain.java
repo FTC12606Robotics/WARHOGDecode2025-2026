@@ -6,6 +6,8 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Thread.sleep;
 
+import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUNew;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -26,9 +28,8 @@ public class Drivetrain{
     private IMU internalIMU;
     private Telemetry telemetry;
     //static final int TickPerRev = 10; // need to measure
-    double angleOffset = 0;
 
-    Drivetrain(HardwareMap hardwareMap, Telemetry telemetry) throws InterruptedException {
+    Drivetrain(HardwareMap hardwareMap, Telemetry telemetry, String imu) throws InterruptedException {
 
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
@@ -78,19 +79,27 @@ public class Drivetrain{
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);*/
 
-        //New IMU thing
-        internalIMU = hardwareMap.get(BNO055IMUNew.class, "internalIMU");
-        internalIMU.initialize(
-                new IMU.Parameters(
+        //For the newer imu in the newer control hubs
+        if (imu.equals("BHI260IMU")){
+            telemetry.addLine("Initializing newer internal IMU");
+            internalIMU = hardwareMap.get(BHI260IMU.class, "internalIMU");
+        }
+        //for the older internal imus
+        else if (imu.equals("BNO055IMU")) {
+            telemetry.addLine("Initializing older internal IMU");
+            internalIMU = hardwareMap.get(BNO055IMUNew.class, "internalIMU");
+            internalIMU.initialize(
+                    new IMU.Parameters(
                         new RevHubOrientationOnRobot(
                                 RevHubOrientationOnRobot.LogoFacingDirection.UP, //TODO will need to change to actually work, REMEMBER this
-                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-                        )
-                )
-        );
+                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD))
+             );
+        }
+        else {
+            telemetry.addLine("Error: IMU match faliure.");
+        }
 
         this.telemetry = telemetry;
-
     }
 
     public enum DirectionMode {FORWARD, SIDE, ROTATE}
@@ -202,23 +211,6 @@ public class Drivetrain{
         }
 
     }
-
-    /*
-    //rather confusingly this just gives the heading
-    public double getIMUData(){
-        return -imu.getAngularOrientation().firstAngle+angleOffset;
-    }
-
-    public void resetAngle(){
-        angleOffset = imu.getAngularOrientation().firstAngle;
-    }
-
-    public void setAngleOffset(double angle){
-        angleOffset = angle*PI/180;
-    }*/
-
-
-    //Refactor of the IMU functions above
 
     //Gets a specific angle from the IMU, returns in Radians
     public double getIMUAngleData(AngleType angle){
