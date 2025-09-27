@@ -20,13 +20,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Drivetrain{
 
-    private DcMotor leftFrontDrive;
-    private DcMotor leftBackDrive;
-    private DcMotor rightFrontDrive;
-    private DcMotor rightBackDrive;
+    private final DcMotor leftFrontDrive;
+    private final DcMotor leftBackDrive;
+    private final DcMotor rightFrontDrive;
+    private final DcMotor rightBackDrive;
     //private BNO055IMU imu;
     private IMU internalIMU;
-    private Telemetry telemetry;
+    private final Telemetry telemetry;
     //static final int TickPerRev = 10; // need to measure
 
     Drivetrain(HardwareMap hardwareMap, Telemetry telemetry, String imu) throws InterruptedException {
