@@ -15,10 +15,10 @@ public class WARHOGTeleOp extends LinearOpMode {
 
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
-        //Outtake = outtake = new Outtake(hardwareMap, telemetry);
+        Outtake outtake = new Outtake(hardwareMap, telemetry);
 
         //=====Set up variables=====
-        double joyx, joyy, joyz, gas, brake, baseSpeed;
+        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed;
         boolean centricityToggle, resetDriveAngle;
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
@@ -86,12 +86,15 @@ public class WARHOGTeleOp extends LinearOpMode {
             gas = currentGamepad1.right_trigger*(1-baseSpeed);
             brake = -currentGamepad1.left_trigger*(baseSpeed);
 
+            launcherSpeed = currentGamepad2.left_stick_y;
+
             //print vectors
             telemetry.addData("y: ", joyy);
             telemetry.addData("x: ", joyx);
             telemetry.addData("z: ", joyz);
             telemetry.addData("gas: ", gas);
             telemetry.addData("brake: ", brake);
+            telemetry.addData("launch speed: ", launcherSpeed);
 
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas+brake);
@@ -104,6 +107,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             if(resetDriveAngle){
                 drivetrain.resetAngleData(Drivetrain.AngleType.HEADING);
             }
+
+            //Launcher/Outtake
+            outtake.spinLauncher(launcherSpeed);
 
 
             //end step
