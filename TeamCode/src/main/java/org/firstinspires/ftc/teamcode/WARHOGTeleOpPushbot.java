@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 @TeleOp(name="WARHOGTeleOpPushbot", group="")
 public class WARHOGTeleOpPushbot extends LinearOpMode {
     public WARHOGTeleOpPushbot() throws InterruptedException {}
@@ -15,6 +17,7 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
 
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BHI260IMU");
+        AprilTagVision aprilTagVision = new AprilTagVision(hardwareMap);
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed;
@@ -42,6 +45,8 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
                 // Swallow the possible exception, it should not happen as
                 // currentGamepad1/2 are being copied from valid Gamepads.
             }
+            telemetry.addLine("Init complete");
+            telemetry.update();
         }
 
         while(opModeIsActive()){
@@ -105,9 +110,26 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
             }
 
 
+            //==========April Tag Vision==========
+            AprilTagDetection detection = aprilTagVision.getBestTag();
+
+            if (detection != null) {
+                telemetry.addData("Tag ID", detection.id);
+                /*if (det.metadata != null) {
+                    telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
+                    telemetry.addData("Bearing (deg)", "%.1f", det.ftcPose.bearing);
+                }*/
+            } else {
+                telemetry.addLine("No tag detected");
+            }
+            //==========April Tag Vision==========
+
+
             //end step
             telemetry.update();
         }
 
+        //Stop vision at the end
+        aprilTagVision.stop();
     }
 }
