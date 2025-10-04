@@ -24,7 +24,6 @@ public class Drivetrain{
     private final DcMotor leftBackDrive;
     private final DcMotor rightFrontDrive;
     private final DcMotor rightBackDrive;
-    //private BNO055IMU imu;
     private IMU internalIMU;
     private final Telemetry telemetry;
     //static final int TickPerRev = 10; // need to measure
@@ -96,7 +95,7 @@ public class Drivetrain{
              );
         }
         else {
-            telemetry.addLine("Error: IMU match faliure.");
+            telemetry.addLine("Error: IMU match failure.");
         }
 
         this.telemetry = telemetry;
