@@ -19,7 +19,7 @@ public class WARHOGTeleOp extends LinearOpMode {
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed;
-        boolean centricityToggle, resetDriveAngle;
+        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick;
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
@@ -78,6 +78,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
             telemetry.addData("Centricity: ", centricity);
 
+            //Pin Flickers
+            leftFlick = currentGamepad2.left_bumper && !previousGamepad2.left_bumper;
+            rightFlick = currentGamepad2.right_bumper && !previousGamepad2.right_bumper;
 
             //set up vectors
             joyx = currentGamepad1.left_stick_x;
@@ -111,6 +114,13 @@ public class WARHOGTeleOp extends LinearOpMode {
             //Launcher/Outtake
             outtake.spinLauncher(launcherSpeed);
 
+            //Pin Flicker
+            if(rightFlick) {
+                outtake.flickPin(Outtake.PINS.RIGHT);
+            }
+            if(leftFlick){
+                outtake.flickPin(Outtake.PINS.LEFT);
+            }
 
             //end step
             telemetry.update();
