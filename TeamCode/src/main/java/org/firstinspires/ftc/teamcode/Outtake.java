@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -12,6 +13,8 @@ public class Outtake {
     private final DcMotor launchMotor;
     private final DcMotor launchMotor2;
 
+    private final CRServo hopper;
+    public enum HOPPERDIRECTION {RIGHT, LEFT}
     private final Servo rightPin;
     private final Servo leftPin;
     public enum PINS {RIGHT, LEFT, BOTH}
@@ -33,6 +36,7 @@ public class Outtake {
 
         rightPin = hardwareMap.get(Servo.class, "rightPin");
         leftPin = hardwareMap.get(Servo.class, "leftPin");
+        hopper = hardwareMap.get(CRServo.class, "hopper");
 
 
         this.telemetry = telemetry;
@@ -57,7 +61,7 @@ public class Outtake {
                 sleep(10);
                 leftPin.setPosition(inPos);
                 break;
-            case RIGHT: ;
+            case RIGHT:
                 rightPin.setPosition(outPos);
                 sleep(10);
                 rightPin.setPosition(inPos);
@@ -69,5 +73,20 @@ public class Outtake {
                 leftPin.setPosition(inPos);
                 rightPin.setPosition(inPos);
         }
+    }
+
+    //Spin the hopper
+    public void spinHopper(HOPPERDIRECTION direction, double speed){
+        if (speed != 0 && direction == HOPPERDIRECTION.LEFT){
+            hopper.setPower(-speed);
+        }
+        else if (speed != 0 && direction == HOPPERDIRECTION.RIGHT){
+            hopper.setPower(speed);
+        }
+    }
+
+    //Turn the hopper on ball slot
+    public void turnHopper(HOPPERDIRECTION direction){
+        //TODO figure out way to turn a certain distance, CRServos don't have pos. we can't guarantee a starting position either
     }
 }

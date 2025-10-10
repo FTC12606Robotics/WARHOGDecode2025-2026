@@ -11,6 +11,8 @@ public class WARHOGAuto extends LinearOpMode {
     public WARHOGAuto() throws InterruptedException {}
 
     private enum MOSAIC {PPG, PGP, GPP, NONE} //PPG=23, PGP=22, GPP=21
+    private enum STARTPOS {FAR, CLOSE} //Launch zones
+    private enum COLOR {RED, BLUE} //Start Color
 
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad currentGamepad2 = new Gamepad();
@@ -22,7 +24,9 @@ public class WARHOGAuto extends LinearOpMode {
     double speed = .50;
     double startSleep = 0; //How many seconds to wait before starting the autonomous routine
 
-    private MOSAIC mosaic = MOSAIC.NONE; //Set a default
+    private MOSAIC mosaic = MOSAIC.NONE; //Set default
+    private STARTPOS startPos = STARTPOS.CLOSE; //Set default
+    private COLOR color = COLOR.RED;
 
 
     @Override
@@ -78,21 +82,40 @@ public class WARHOGAuto extends LinearOpMode {
                 startSleep=0;
             }
 
+            //Set starting config
+            if (currentGamepad1.b) {
+                color = COLOR.RED;
+            }
+            if (currentGamepad1.x) {
+                color = COLOR.BLUE;
+            }
+            if (currentGamepad1.left_bumper) {
+                if (startPos == STARTPOS.CLOSE){
+                    startPos = STARTPOS.FAR;
+                }
+                else if (startPos == STARTPOS.FAR){
+                    startPos = STARTPOS.CLOSE;
+                }
+            }
+
             //For camera usage in decision making
             if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button){
                 useCamera = !useCamera;
             }
 
+            telemetry.addData("color (x/b)", color);
+            telemetry.addData("launchPos (lbump)", startPos);
             telemetry.addData("Speed (a/y)", speed);
             telemetry.addData("startSleep (up/down)", startSleep);
+            telemetry.addLine();
             telemetry.addData("Use Camera? (lsbtn)", useCamera);
 
-            //==========April Tag Vision==========
+            //===============April Tag Vision===============
             if (useCamera){
                 AprilTagDetection detection = aprilTagVision.getBestTag();
 
                 if (detection != null) {
-                    int id = (int)detection.id;
+                    int id = detection.id;
                     telemetry.addData("Tag ID", detection.id);
                     /*if (det.metadata != null) {
                         telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
@@ -119,13 +142,13 @@ public class WARHOGAuto extends LinearOpMode {
             }
 
             telemetry.addData("Detected Mosaic pattern: ", mosaic);
-            //==========April Tag Vision==========
+            //===============April Tag Vision===============
 
             telemetry.update();
         }
 
         //Stop vision to save resources
-        aprilTagVision.stop();
+        aprilTagVision.stop(); //TODO might want to take this out to be able to figure out mosiac after moving
 
 
         //=============Start command just came in================
@@ -136,7 +159,7 @@ public class WARHOGAuto extends LinearOpMode {
         //Start Wait
         sleep((long)((startSleep)*1000));
 
-
+        //RED, BLUE, FAR, CLOSE
 
         telemetry.addLine("Auto Complete");
         telemetry.update();

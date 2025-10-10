@@ -18,7 +18,7 @@ public class WARHOGTeleOp extends LinearOpMode {
         Outtake outtake = new Outtake(hardwareMap, telemetry);
 
         //=====Set up variables=====
-        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed;
+        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed, hopperSpeed;
         boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick;
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
@@ -90,6 +90,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             brake = -currentGamepad1.left_trigger*(baseSpeed);
 
             launcherSpeed = currentGamepad2.left_stick_y;
+            hopperSpeed = currentGamepad2.right_stick_x;
 
             //print vectors
             telemetry.addData("y: ", joyy);
@@ -98,6 +99,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             telemetry.addData("gas: ", gas);
             telemetry.addData("brake: ", brake);
             telemetry.addData("launch speed: ", launcherSpeed);
+            telemetry.addData("Hopper speed: ", hopperSpeed);
 
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas+brake);
@@ -113,6 +115,9 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //Launcher/Outtake
             outtake.spinLauncher(launcherSpeed);
+
+            //Spin Hopper TEST
+            outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
 
             //Pin Flicker
             if(rightFlick) {
