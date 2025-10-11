@@ -15,6 +15,9 @@ public class Outtake {
 
     private final CRServo hopper;
     public enum HOPPERDIRECTION {RIGHT, LEFT}
+    private final Servo piston;
+    private final double pistonIn = 0;
+    private final double pistonOut = .3;
     private final Servo rightPin;
     private final Servo leftPin;
     public enum PINS {RIGHT, LEFT, BOTH}
@@ -37,6 +40,8 @@ public class Outtake {
         rightPin = hardwareMap.get(Servo.class, "rightPin");
         leftPin = hardwareMap.get(Servo.class, "leftPin");
         hopper = hardwareMap.get(CRServo.class, "hopper");
+        piston = hardwareMap.get(Servo.class, "piston");
+        retractPiston();
 
 
         this.telemetry = telemetry;
@@ -88,5 +93,32 @@ public class Outtake {
     //Turn the hopper on ball slot
     public void turnHopper(HOPPERDIRECTION direction){
         //TODO figure out way to turn a certain distance, CRServos don't have pos. we can't guarantee a starting position either
+    }
+
+    //Extend Piston
+    public void extendPiston(){
+        piston.setPosition(pistonOut);
+    }
+
+    //Retract Piston
+    public void retractPiston(){
+        piston.setPosition(pistonIn);
+    }
+
+    //Move Piston to any pos.
+    public void runPiston(double pos){
+        piston.setPosition(pos);
+    }
+
+    //Auto: Cycle the piston, for auto don't want to stop teleop
+    public void runPiston() throws InterruptedException {
+        extendPiston();
+        sleep(1000);
+        retractPiston();
+    }
+
+    //Give piston position
+    public double pistonPosition(){
+        return piston.getPosition();
     }
 }

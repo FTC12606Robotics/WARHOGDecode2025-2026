@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,8 +19,8 @@ public class WARHOGTeleOp extends LinearOpMode {
         Outtake outtake = new Outtake(hardwareMap, telemetry);
 
         //=====Set up variables=====
-        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed, hopperSpeed;
-        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick;
+        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed, hopperSpeed, pistonPos, turnPiston;
+        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston;
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
@@ -81,6 +82,8 @@ public class WARHOGTeleOp extends LinearOpMode {
             //Pin Flickers
             leftFlick = currentGamepad2.left_bumper && !previousGamepad2.left_bumper;
             rightFlick = currentGamepad2.right_bumper && !previousGamepad2.right_bumper;
+            turnPiston = -currentGamepad2.right_stick_y;
+            runPiston = currentGamepad2.b && !previousGamepad2.b;
 
             //set up vectors
             joyx = currentGamepad1.left_stick_x;
@@ -89,8 +92,15 @@ public class WARHOGTeleOp extends LinearOpMode {
             gas = currentGamepad1.right_trigger*(1-baseSpeed);
             brake = -currentGamepad1.left_trigger*(baseSpeed);
 
-            launcherSpeed = currentGamepad2.left_stick_y;
+            launcherSpeed = -currentGamepad2.left_stick_y;
             hopperSpeed = currentGamepad2.right_stick_x;
+
+            pistonPos = outtake.pistonPosition();
+
+            //limit launcher speed
+            if (abs(launcherSpeed) > .9){
+                launcherSpeed = .9;
+            }
 
             //print vectors
             telemetry.addData("y: ", joyy);
@@ -99,7 +109,8 @@ public class WARHOGTeleOp extends LinearOpMode {
             telemetry.addData("gas: ", gas);
             telemetry.addData("brake: ", brake);
             telemetry.addData("launch speed: ", launcherSpeed);
-            telemetry.addData("Hopper speed: ", hopperSpeed);
+            telemetry.addData("hopper speed: ", hopperSpeed);
+            telemetry.addData("piston position: ", pistonPos);
 
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas+brake);
@@ -126,6 +137,20 @@ public class WARHOGTeleOp extends LinearOpMode {
             if(leftFlick){
                 outtake.flickPin(Outtake.PINS.LEFT);
             }
+
+            //Piston extension
+            if (runPiston){
+                if (pistonPos >= .1){
+                    outtake.retractPiston();
+                }
+                else{
+                    outtake.extendPiston();
+                }
+            }
+            if (turnPiston!=0){
+                outtake.runPiston(turnPiston);
+            }
+
 
             //end step
             telemetry.update();
