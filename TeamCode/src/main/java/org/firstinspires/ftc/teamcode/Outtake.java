@@ -57,6 +57,19 @@ public class Outtake {
         //telemetry.addData("Launch Motor 2 Power: ", launchMotor2.getPower());
     }
 
+    // Return launch motor powers as doubles
+    public double getSpinPower (int motor){
+        if (motor == 1){
+            return launchMotor.getPower();
+        }
+        else if (motor == 2){
+            return launchMotor2.getPower();
+        }
+        else {
+            return launchMotor.getPower();
+        }
+    }
+
     //For flicking the front pins
     public void flickPin(PINS pin) throws InterruptedException {
 
