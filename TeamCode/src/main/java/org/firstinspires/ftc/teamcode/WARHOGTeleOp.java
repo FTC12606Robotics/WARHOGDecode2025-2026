@@ -168,11 +168,13 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.retractPiston();
                 telemetry.addLine("Auto Launcher Status: RETRACTED");
             }
-            else if (launchTrigger >= .2 && launchTrigger < .85){
+            else if (launchTrigger >= .2 && launchTrigger < .9){
                 outtake.spinLauncher(staticLaunchSpeed);
                 telemetry.addLine("Auto Launcher Status: ARMING");
             }
-            else if (launchTrigger >= .85){
+            else if (launchTrigger >= .9){
+                //Continue to spin up the launcher
+                outtake.spinLauncher(staticLaunchSpeed);
                 //If launcher is sufficiently spinning
                 if (outtake.getSpinPower(1) >= .95*staticLaunchSpeed){ //TODO come up with a better threshold number
                     outtake.extendPiston();
