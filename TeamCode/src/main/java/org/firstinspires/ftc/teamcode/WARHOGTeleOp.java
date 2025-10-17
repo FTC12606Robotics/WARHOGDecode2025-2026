@@ -21,7 +21,7 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
                 hopperSpeed, hopperStickSpeed, hopperGasSpeed,pistonPos, launchTrigger;
-        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston, spinToggle;
+        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston, spinToggle = false;
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
@@ -113,8 +113,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             telemetry.addData("z: ", joyz);
             telemetry.addData("gas: ", gas);
             telemetry.addData("brake: ", brake);
-            telemetry.addData("launch speed: ", outtake.getSpinPower(1));
+            telemetry.addData("launch speed: ", outtake.getSpinPower(2));
             telemetry.addData("hopper speed: ", hopperSpeed);
+            telemetry.addData("hopper gas: ", hopperGasSpeed);
             telemetry.addData("piston position: ", pistonPos);
 
             //set and print motor powers
@@ -130,11 +131,11 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Launcher/Outtake
-            if (!spinToggle) {
-                outtake.spinLauncher(launcherSpeed);
-            }
-            else{
+            if (spinToggle && launchTrigger == 0) {
                 outtake.spinLauncher(staticLaunchSpeed);
+            }
+            else if (!spinToggle && launchTrigger == 0){
+                outtake.spinLauncher(launcherSpeed);
             }
 
             //Spin Hopper TEST
@@ -143,6 +144,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed+hopperGasSpeed);
+            }
+            else{
+                outtake.stopHopper();
             }
 
             //Pin Flicker
@@ -164,7 +168,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Single button launch sequence.
-            if (launchTrigger >= .1 && launchTrigger < .2){
+            if (launchTrigger >= .05 && launchTrigger < .2){
                 outtake.retractPiston();
                 telemetry.addLine("Auto Launcher Status: RETRACTED");
             }
@@ -176,7 +180,7 @@ public class WARHOGTeleOp extends LinearOpMode {
                 //Continue to spin up the launcher
                 outtake.spinLauncher(staticLaunchSpeed);
                 //If launcher is sufficiently spinning
-                if (outtake.getSpinPower(1) >= .95*staticLaunchSpeed){ //TODO come up with a better threshold number
+                if (outtake.getSpinPower(2) > .99*staticLaunchSpeed){ //TODO come up with a better threshold number
                     outtake.extendPiston();
                     telemetry.addLine("Auto Launcher Status: FIRING");
                 }
