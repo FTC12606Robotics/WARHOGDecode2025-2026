@@ -70,7 +70,11 @@ public class WARHOGTeleOp extends LinearOpMode {
             //inputs that toggle the modes
             centricityToggle = currentGamepad1.dpad_down && !previousGamepad1.dpad_down; //change whether the drive is bot or field centric
             resetDriveAngle = currentGamepad1.dpad_up; //use when the robot is facing away from you
-            spinToggle = currentGamepad2.a && !previousGamepad2.a;
+
+            //toggle on and off the launch motors
+            if (currentGamepad2.a && !previousGamepad2.a){
+                spinToggle = !spinToggle;
+            }
 
             //code to switch between field centric and bot centric drive
             if(centricityToggle){
@@ -131,21 +135,21 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Launcher/Outtake
-            if (spinToggle && launchTrigger == 0) {
+            if (spinToggle && launchTrigger <= .05) {
                 outtake.spinLauncher(staticLaunchSpeed);
             }
-            else if (!spinToggle && launchTrigger == 0){
+            else if (!spinToggle && launchTrigger <= 0.05){
                 outtake.spinLauncher(launcherSpeed);
             }
 
             //Spin Hopper TEST
-            if (hopperStickSpeed < 0) {
+            if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed+hopperGasSpeed);
             }
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed+hopperGasSpeed);
             }
-            else{
+            else {
                 outtake.stopHopper();
             }
 
