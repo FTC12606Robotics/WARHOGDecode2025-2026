@@ -34,7 +34,7 @@ public class Outtake {
 
         launchMotor2 = hardwareMap.get(DcMotor.class, "launchMotor2");
         launchMotor2.setDirection(DcMotor.Direction.FORWARD);
-        launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //Doesn't work on 1620 rpm 5203 motors
 
         rightPin = hardwareMap.get(Servo.class, "rightPin");
@@ -106,9 +106,15 @@ public class Outtake {
         hopper.setPower(0);
     }
 
-    //Turn the hopper on ball slot
-    public void turnHopper(HOPPERDIRECTION direction){
-        //TODO figure out way to turn a certain distance, CRServos don't have pos. we can't guarantee a starting position either
+    //Auto: Turn the hopper based on time and speed
+    public void turnHopperTime(HOPPERDIRECTION direction, double speed, double mSeconds) throws InterruptedException {
+        spinHopper(direction, speed);
+        sleep((long) mSeconds);
+        stopHopper();
+    }
+
+    public void turnHopperMag(HOPPERDIRECTION direction, double speed){
+        //Turn the hopper based on magnet positions for meet 2
     }
 
     //Extend Piston
