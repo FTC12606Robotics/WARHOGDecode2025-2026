@@ -190,11 +190,12 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.spinLauncher(staticLaunchSpeed);
                 timerCount += 1;
                 //To basically "cheat" a launch timer
-                if (timerCount >= 120) { //TODO come up with a better threshold number
+                if (timerCount >= 120 && timerCount <= 140) { //TODO come up with a better threshold number
                     outtake.extendPiston();
                     telemetry.addLine("Auto Launcher Status: FIRING");
-                    if (timerCount >= 130){
+                    if (timerCount >= 140){
                         outtake.retractPiston(); //Auto retract piston to make driving easier
+                        timerCount = 0;
                     }
                 }
                 else{
