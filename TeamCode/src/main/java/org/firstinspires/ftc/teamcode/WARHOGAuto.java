@@ -11,7 +11,7 @@ public class WARHOGAuto extends LinearOpMode {
     public WARHOGAuto() throws InterruptedException {}
 
     private enum MOSAIC {PPG, PGP, GPP, NONE} //PPG=23, PGP=22, GPP=21
-    private enum STARTPOS {FAR, CLOSE} //Launch zones
+    private enum STARTPOS {FAR, GOAL} //Launch zones
     private enum COLOR {RED, BLUE} //Start Color
 
     Gamepad currentGamepad1 = new Gamepad();
@@ -25,7 +25,7 @@ public class WARHOGAuto extends LinearOpMode {
     double startSleep = 0; //How many seconds to wait before starting the autonomous routine
 
     private MOSAIC mosaic = MOSAIC.NONE; //Set default
-    private STARTPOS startPos = STARTPOS.CLOSE; //Set default
+    private STARTPOS startPos = STARTPOS.GOAL; //Set default
     private COLOR color = COLOR.RED;
 
 
@@ -48,8 +48,7 @@ public class WARHOGAuto extends LinearOpMode {
 
                 currentGamepad1.copy(gamepad1);
                 currentGamepad2.copy(gamepad2);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // Swallow the possible exception, it should not happen as
                 // currentGamepad1/2 are being copied from valid Gamepads.
             }
@@ -90,16 +89,15 @@ public class WARHOGAuto extends LinearOpMode {
                 color = COLOR.BLUE;
             }
             if (currentGamepad1.left_bumper) {
-                if (startPos == STARTPOS.CLOSE){
+                if (startPos == STARTPOS.GOAL) {
                     startPos = STARTPOS.FAR;
-                }
-                else if (startPos == STARTPOS.FAR){
-                    startPos = STARTPOS.CLOSE;
+                } else if (startPos == STARTPOS.FAR) {
+                    startPos = STARTPOS.GOAL;
                 }
             }
 
             //For camera usage in decision making
-            if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button){
+            if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button) {
                 useCamera = !useCamera;
             }
 
@@ -111,7 +109,7 @@ public class WARHOGAuto extends LinearOpMode {
             telemetry.addData("Use Camera? (lsbtn)", useCamera);
 
             //===============April Tag Vision===============
-            if (useCamera){
+            if (useCamera) {
                 AprilTagDetection detection = aprilTagVision.getBestTag();
 
                 if (detection != null) {
@@ -123,21 +121,17 @@ public class WARHOGAuto extends LinearOpMode {
                     }*/
 
                     //Set Mosaic Arrangement
-                    if (id == 21){
-                        mosaic=MOSAIC.GPP;
-                    }
-                    else if (id == 22){
+                    if (id == 21) {
+                        mosaic = MOSAIC.GPP;
+                    } else if (id == 22) {
                         mosaic = MOSAIC.PGP;
-                    }
-                    else if (id == 23){
+                    } else if (id == 23) {
                         mosaic = MOSAIC.PPG;
                     }
-                }
-                else {
+                } else {
                     telemetry.addLine("No tag detected");
                 }
-            }
-            else {
+            } else {
                 mosaic = MOSAIC.NONE;
             }
 

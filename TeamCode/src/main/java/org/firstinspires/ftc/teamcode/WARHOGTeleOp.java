@@ -72,6 +72,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             //inputs that toggle the modes
             centricityToggle = currentGamepad1.dpad_down && !previousGamepad1.dpad_down; //change whether the drive is bot or field centric
             resetDriveAngle = currentGamepad1.dpad_up; //use when the robot is facing away from you
+            spinToggle = currentGamepad2.a && !previousGamepad2.a;
 
             //toggle on and off the launch motors
             if (currentGamepad2.a && !previousGamepad2.a){
