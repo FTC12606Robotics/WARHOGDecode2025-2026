@@ -109,7 +109,7 @@ public class Outtake {
     //Auto: Turn the hopper based on time and speed
     public void turnHopperTime(HOPPERDIRECTION direction, double speed, double mSeconds) throws InterruptedException {
         spinHopper(direction, speed);
-        sleep((long) mSeconds);
+        sleep((long)mSeconds);
         stopHopper();
     }
 
