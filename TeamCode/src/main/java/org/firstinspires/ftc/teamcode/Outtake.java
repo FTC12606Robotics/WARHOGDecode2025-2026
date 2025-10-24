@@ -29,12 +29,12 @@ public class Outtake {
     Outtake(HardwareMap hardwareMap, Telemetry telemetry){
         launchMotor = hardwareMap.get(DcMotor.class, "launchMotor");
         launchMotor.setDirection(DcMotor.Direction.FORWARD);
-        launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //Doesn't work on 1620 rpm 5203 motors
 
         launchMotor2 = hardwareMap.get(DcMotor.class, "launchMotor2");
         launchMotor2.setDirection(DcMotor.Direction.FORWARD);
-        launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //Doesn't work on 1620 rpm 5203 motors
 
         rightPin = hardwareMap.get(Servo.class, "rightPin");
@@ -95,17 +95,26 @@ public class Outtake {
 
     //Spin the hopper
     public void spinHopper(HOPPERDIRECTION direction, double speed){
-        if (speed != 0 && direction == HOPPERDIRECTION.LEFT){
+        if (direction == HOPPERDIRECTION.LEFT){
             hopper.setPower(-speed);
         }
-        else if (speed != 0 && direction == HOPPERDIRECTION.RIGHT){
+        else if (direction == HOPPERDIRECTION.RIGHT){
             hopper.setPower(speed);
         }
     }
+    public void stopHopper(){
+        hopper.setPower(0);
+    }
 
-    //Turn the hopper on ball slot
-    public void turnHopper(HOPPERDIRECTION direction){
-        //TODO figure out way to turn a certain distance, CRServos don't have pos. we can't guarantee a starting position either
+    //Auto: Turn the hopper based on time and speed
+    public void turnHopperTime(HOPPERDIRECTION direction, double speed, double mSeconds) throws InterruptedException {
+        spinHopper(direction, speed);
+        sleep((long) mSeconds);
+        stopHopper();
+    }
+
+    public void turnHopperMag(HOPPERDIRECTION direction, double speed){
+        //Turn the hopper based on magnet positions for meet 2
     }
 
     //Extend Piston

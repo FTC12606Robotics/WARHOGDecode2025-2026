@@ -21,13 +21,15 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
                 hopperSpeed, hopperStickSpeed, hopperGasSpeed,pistonPos, launchTrigger;
-        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston, spinToggle;
+        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston, spinToggle = false;
+        int timerCount; // to try and time a spin up during launch sequence
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
         baseSpeed = .4;
         staticLaunchSpeed = .9;
         hopperSpeed = .3;
+        timerCount = 0;
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -72,6 +74,11 @@ public class WARHOGTeleOp extends LinearOpMode {
             resetDriveAngle = currentGamepad1.dpad_up; //use when the robot is facing away from you
             spinToggle = currentGamepad2.a && !previousGamepad2.a;
 
+            //toggle on and off the launch motors
+            if (currentGamepad2.a && !previousGamepad2.a){
+                spinToggle = !spinToggle;
+            }
+
             //code to switch between field centric and bot centric drive
             if(centricityToggle){
                 if(centricity==Drivetrain.Centricity.BOT){
@@ -113,9 +120,11 @@ public class WARHOGTeleOp extends LinearOpMode {
             telemetry.addData("z: ", joyz);
             telemetry.addData("gas: ", gas);
             telemetry.addData("brake: ", brake);
-            telemetry.addData("launch speed: ", outtake.getSpinPower(1));
+            telemetry.addData("launch speed: ", outtake.getSpinPower(2));
             telemetry.addData("hopper speed: ", hopperSpeed);
+            telemetry.addData("hopper gas: ", hopperGasSpeed);
             telemetry.addData("piston position: ", pistonPos);
+            telemetry.addData("ticker: ", timerCount);
 
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas+brake);
@@ -130,19 +139,22 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Launcher/Outtake
-            if (!spinToggle) {
-                outtake.spinLauncher(launcherSpeed);
-            }
-            else{
+            if (spinToggle && launchTrigger <= .05) {
                 outtake.spinLauncher(staticLaunchSpeed);
+            }
+            else if (!spinToggle && launchTrigger <= 0.05){
+                outtake.spinLauncher(launcherSpeed);
             }
 
             //Spin Hopper TEST
-            if (hopperStickSpeed < 0) {
-                outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed+hopperGasSpeed);
+            if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
+                outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
             }
             else if (hopperStickSpeed > 0){
-                outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed+hopperGasSpeed);
+                outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
+            }
+            else {
+                outtake.stopHopper();
             }
 
             //Pin Flicker
@@ -164,21 +176,28 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Single button launch sequence.
-            if (launchTrigger >= .1 && launchTrigger < .2){
+            if (launchTrigger >= .05 && launchTrigger < .2){
                 outtake.retractPiston();
                 telemetry.addLine("Auto Launcher Status: RETRACTED");
+                timerCount = 0;
             }
             else if (launchTrigger >= .2 && launchTrigger < .9){
                 outtake.spinLauncher(staticLaunchSpeed);
                 telemetry.addLine("Auto Launcher Status: ARMING");
+                timerCount += 1;
             }
             else if (launchTrigger >= .9){
                 //Continue to spin up the launcher
                 outtake.spinLauncher(staticLaunchSpeed);
-                //If launcher is sufficiently spinning
-                if (outtake.getSpinPower(1) >= .95*staticLaunchSpeed){ //TODO come up with a better threshold number
+                timerCount += 1;
+                //To basically "cheat" a launch timer
+                if (timerCount >= 120 && timerCount <= 140) { //TODO come up with a better threshold number
                     outtake.extendPiston();
                     telemetry.addLine("Auto Launcher Status: FIRING");
+                    if (timerCount >= 140){
+                        outtake.retractPiston(); //Auto retract piston to make driving easier
+                        timerCount = 0;
+                    }
                 }
                 else{
                     telemetry.addLine("Auto Launcher Status: WARNING: FIRING WHEN READY");

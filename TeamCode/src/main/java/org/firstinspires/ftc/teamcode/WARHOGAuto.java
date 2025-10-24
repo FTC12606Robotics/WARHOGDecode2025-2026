@@ -54,31 +54,31 @@ public class WARHOGAuto extends LinearOpMode {
             }
 
             //Override speed with driver hub
-            if (currentGamepad1.y && !previousGamepad1.y) {
-                speed += .05;
+            if(currentGamepad1.y && !previousGamepad1.y){
+                speed+=.05;
             }
-            if (currentGamepad1.a && !previousGamepad1.a) {
-                speed -= .05;
+            if(currentGamepad1.a && !previousGamepad1.a){
+                speed-=.05;
             }
-            if (speed > 1) {
-                speed = 1;
+            if(speed>1){
+                speed=1;
             }
-            if (speed < .20) {
-                speed = .20;
+            if(speed<.20){
+                speed=.20;
             }
 
             //Override startSleep with driver hub
-            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up) {
-                startSleep += .5;
+            if(currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
+                startSleep+=.5;
             }
-            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down) {
-                startSleep -= .5;
+            if(currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
+                startSleep-=.5;
             }
-            if (startSleep > 20) {
-                startSleep = 20;
+            if(startSleep>20){
+                startSleep=20;
             }
-            if (startSleep < 0) {
-                startSleep = 0;
+            if(startSleep<0){
+                startSleep=0;
             }
 
             //Set starting config
