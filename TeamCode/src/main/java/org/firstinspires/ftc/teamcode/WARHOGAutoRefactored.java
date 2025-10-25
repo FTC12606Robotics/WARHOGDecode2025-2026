@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -13,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="WARHOGAuto", group="")
+@Autonomous(name="WARHOGAutoRefactored", group="")
 public class WARHOGAutoRefactored extends OpMode {
     public WARHOGAutoRefactored() throws InterruptedException {}
     private Outtake outtake;
@@ -65,30 +67,33 @@ public class WARHOGAutoRefactored extends OpMode {
     //====================FOR PEDROPATHING====================
 
     //Use the camera to detect april tags
-    public void detectTag(){
-            AprilTagDetection detection = aprilTagVision.getBestTag();
+    public void detectTag() {
+        AprilTagDetection detection = null;
+        if (aprilTagVision != null) {
+            detection = aprilTagVision.getBestTag();
+        }
 
-            if (detection != null) {
-                int id = detection.id;
-                telemetry.addData("Tag ID", detection.id);
+        if (detection != null) {
+            int id = detection.id;
+            telemetry.addData("Tag ID", detection.id);
                 /*if (det.metadata != null) {
                     telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
                     telemetry.addData("Bearing (deg)", "%.1f", det.ftcPose.bearing);
                 }*/
 
-                //Set Mosaic Arrangement
-                if (id == 21) {
-                    mosaic = MOSAIC.GPP;
-                } else if (id == 22) {
-                    mosaic = MOSAIC.PGP;
-                } else if (id == 23) {
-                    mosaic = MOSAIC.PPG;
-                } else{
-                    mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
-                }
+            //Set Mosaic Arrangement
+            if (id == 21) {
+                mosaic = MOSAIC.GPP;
+            } else if (id == 22) {
+                mosaic = MOSAIC.PGP;
+            } else if (id == 23) {
+                mosaic = MOSAIC.PPG;
             } else {
-                telemetry.addLine("No tag detected");
+                mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
             }
+        } else {
+            telemetry.addLine("No tag detected");
+        }
     }
 
     public void buildPaths() {
@@ -189,6 +194,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin left 1
@@ -203,6 +209,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin right 1
@@ -217,6 +224,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         // spin right 1
@@ -259,6 +267,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin left 1
@@ -273,6 +282,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin right 1
@@ -287,6 +297,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         // spin right 1
@@ -349,6 +360,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin left 1
@@ -363,6 +375,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin right 1
@@ -377,6 +390,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         // spin right 1
@@ -419,6 +433,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin left 1
@@ -433,6 +448,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         //continue spin right 1
@@ -447,6 +463,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
                         outtake.runPiston();
                         // spin right 1
@@ -492,7 +509,8 @@ public class WARHOGAutoRefactored extends OpMode {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);
         }
-        AprilTagVision aprilTagVision = new AprilTagVision(hardwareMap);
+        aprilTagVision = new AprilTagVision(hardwareMap);
+        outtake = new Outtake(hardwareMap, telemetry);
 
         //Initialize for PedroPathing
         pathTimer = new Timer();
@@ -580,30 +598,6 @@ public class WARHOGAutoRefactored extends OpMode {
         //===============April Tag Vision===============
         if (useCamera) {
             detectTag();
-
-//            AprilTagDetection detection = aprilTagVision.getBestTag();
-//
-//            if (detection != null) {
-//                int id = detection.id;
-//                telemetry.addData("Tag ID", detection.id);
-//                /*if (det.metadata != null) {
-//                    telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
-//                    telemetry.addData("Bearing (deg)", "%.1f", det.ftcPose.bearing);
-//                }*/
-//
-//                //Set Mosaic Arrangement
-//                if (id == 21) {
-//                    mosaic = MOSAIC.GPP;
-//                } else if (id == 22) {
-//                    mosaic = MOSAIC.PGP;
-//                } else if (id == 23) {
-//                    mosaic = MOSAIC.PPG;
-//                } else{
-//                    mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
-//                }
-//            } else {
-//                telemetry.addLine("No tag detected");
-//            }
         } else {
             mosaic = MOSAIC.NONE;
         }
