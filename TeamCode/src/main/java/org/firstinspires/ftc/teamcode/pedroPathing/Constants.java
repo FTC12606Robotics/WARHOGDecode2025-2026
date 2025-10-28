@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -14,28 +15,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass() //TODO
-            //.forwardZeroPowerAcceleration(deceleration) //TODO AutoTuning after other todos
-            //.lateralZeroPowerAcceleration(deceleration);
+            .mass(8.3461)
+            .forwardZeroPowerAcceleration(-40.0051587496563)
+            .lateralZeroPowerAcceleration(-66.42862179542217)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.08, 0, 0.01, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0, 0.0005, 0.01));
+            //.centripetalScaling(0.0005); TODO
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .99, 1);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .maxPower(1)
-            //.xVelocity(velocity) //TODO AutoTuning after other todos
-            //.yVelocity(velocity)
+            .maxPower(.8) //max drive power
+            .xVelocity(50.85885307732529)
+            .yVelocity(38.26002057894005)
             .rightFrontMotorName("rightFrontDrive")
             .rightRearMotorName("rightBackDrive")
             .leftRearMotorName("leftBackDrive")
             .leftFrontMotorName("leftFrontDrive")
-            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
+            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
 
-    public static PinpointConstants localizerConstants = new PinpointConstants() //TODO
-            .forwardPodY(-5)
-            .strafePodX(0.5)
+    public static PinpointConstants localizerConstants = new PinpointConstants()
+            .forwardPodY(-3.5)
+            .strafePodX(-4.5)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)

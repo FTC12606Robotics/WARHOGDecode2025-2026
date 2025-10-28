@@ -17,7 +17,7 @@ public class Outtake {
     public enum HOPPERDIRECTION {RIGHT, LEFT}
     private final Servo piston;
     private final double pistonIn = 0;
-    private final double pistonOut = .3;
+    private final double pistonOut = .35;
     private final Servo rightPin;
     private final Servo leftPin;
     public enum PINS {RIGHT, LEFT, BOTH}
