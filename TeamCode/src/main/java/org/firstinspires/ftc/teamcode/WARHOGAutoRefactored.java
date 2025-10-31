@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -13,9 +15,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="WARHOGAuto", group="")
+@Autonomous(name="WARHOGAutoRefactored", group="")
 public class WARHOGAutoRefactored extends OpMode {
     public WARHOGAutoRefactored() throws InterruptedException {}
+    private Outtake outtake;
+    private AprilTagVision aprilTagVision;
 
     private enum MOSAIC {PPG, PGP, GPP, NONE} //PPG=23, PGP=22, GPP=21
     private enum STARTPOS {FAR, GOAL} //Launch zones
@@ -30,6 +34,8 @@ public class WARHOGAutoRefactored extends OpMode {
 
     double speed = .50;
     double startSleep = 0; //How many seconds to wait before starting the autonomous routine
+
+    double hopperRotationMSec = 1000; // approx milli seconds to rotate hopper 1 position at .2 speed
 
     private MOSAIC mosaic = MOSAIC.NONE; //Set default
     private STARTPOS startPos = STARTPOS.GOAL; //Set default
@@ -61,32 +67,34 @@ public class WARHOGAutoRefactored extends OpMode {
     //====================FOR PEDROPATHING====================
 
     //Use the camera to detect april tags
-    public void detectTag(){
-            AprilTagDetection detection = aprilTagVision.getBestTag();
+    public void detectTag() {
+        AprilTagDetection detection = null;
+        if (aprilTagVision != null) {
+            detection = aprilTagVision.getBestTag();
+        }
 
-            if (detection != null) {
-                int id = detection.id;
-                telemetry.addData("Tag ID", detection.id);
+        if (detection != null) {
+            int id = detection.id;
+            telemetry.addData("Tag ID", detection.id);
                 /*if (det.metadata != null) {
                     telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
                     telemetry.addData("Bearing (deg)", "%.1f", det.ftcPose.bearing);
                 }*/
 
-                //Set Mosaic Arrangement
-                if (id == 21) {
-                    mosaic = MOSAIC.GPP;
-                } else if (id == 22) {
-                    mosaic = MOSAIC.PGP;
-                } else if (id == 23) {
-                    mosaic = MOSAIC.PPG;
-                } else{
-                    mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
-                }
+            //Set Mosaic Arrangement
+            if (id == 21) {
+                mosaic = MOSAIC.GPP;
+            } else if (id == 22) {
+                mosaic = MOSAIC.PGP;
+            } else if (id == 23) {
+                mosaic = MOSAIC.PPG;
             } else {
-                telemetry.addLine("No tag detected");
+                mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
             }
+        } else {
+            telemetry.addLine("No tag detected");
+        }
     }
-
 
     public void buildPaths() {
         //This is our scorePreloads go from start to score, check goes from start to check pos,
@@ -142,7 +150,7 @@ public class WARHOGAutoRefactored extends OpMode {
                 .build();
     }
 
-    public void autonomousPathUpdate() {
+    public void autonomousPathUpdate() throws InterruptedException {
         switch (pathState) {
             // Cases 0-3 for close red, cases 4-6 for far red, cases 7-10 for close blue, cases 11-13 for far blue
             //============Close Red===========
@@ -181,30 +189,54 @@ public class WARHOGAutoRefactored extends OpMode {
                 if(!follower.isBusy()) {
                     /* TODO Score Artifacts */
 
+                    //SpinLaunchMotors
+                    outtake.spinLauncher(.8); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        // spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
+                    outtake.spinLauncher(0);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseRed,true);
@@ -230,30 +262,54 @@ public class WARHOGAutoRefactored extends OpMode {
                 if(!follower.isBusy()) {
                     /* TODO Score Sample */
 
+                    //SpinLaunchMotors
+                    outtake.spinLauncher(.9); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        // spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
+                    outtake.spinLauncher(0);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarRed,true); //TODO figure out how this works
@@ -299,30 +355,54 @@ public class WARHOGAutoRefactored extends OpMode {
                 if(!follower.isBusy()) {
                     /* TODO Score Artifacts */
 
+                    //SpinLaunchMotors
+                    outtake.spinLauncher(.8); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        // spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
+                    outtake.spinLauncher(0);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseBlue,true);
@@ -348,30 +428,54 @@ public class WARHOGAutoRefactored extends OpMode {
                 if(!follower.isBusy()) {
                     /* TODO Score Artifacts */
 
+                    //SpinLaunchMotors
+                    outtake.spinLauncher(.9); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin left 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.GPP){
                         //spin right .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                         //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
                     else if (mosaic == MOSAIC.PGP){
                         //spin left .5
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+                        sleep(500);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        // spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
-                        //continue spin left 1
+                        outtake.runPiston();
+                        //continue spin right 1
+                        outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
                         //launch
+                        outtake.runPiston();
                     }
+                    outtake.spinLauncher(0);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarBlue,true); //TODO figure out how this works
@@ -405,7 +509,8 @@ public class WARHOGAutoRefactored extends OpMode {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);
         }
-        AprilTagVision aprilTagVision = new AprilTagVision(hardwareMap);
+        aprilTagVision = new AprilTagVision(hardwareMap);
+        outtake = new Outtake(hardwareMap, telemetry);
 
         //Initialize for PedroPathing
         pathTimer = new Timer();
@@ -493,30 +598,6 @@ public class WARHOGAutoRefactored extends OpMode {
         //===============April Tag Vision===============
         if (useCamera) {
             detectTag();
-
-//            AprilTagDetection detection = aprilTagVision.getBestTag();
-//
-//            if (detection != null) {
-//                int id = detection.id;
-//                telemetry.addData("Tag ID", detection.id);
-//                /*if (det.metadata != null) {
-//                    telemetry.addData("Range (m)", "%.2f", det.ftcPose.range);
-//                    telemetry.addData("Bearing (deg)", "%.1f", det.ftcPose.bearing);
-//                }*/
-//
-//                //Set Mosaic Arrangement
-//                if (id == 21) {
-//                    mosaic = MOSAIC.GPP;
-//                } else if (id == 22) {
-//                    mosaic = MOSAIC.PGP;
-//                } else if (id == 23) {
-//                    mosaic = MOSAIC.PPG;
-//                } else{
-//                    mosaic = MOSAIC.NONE; // In case we pick up the goal mosaics
-//                }
-//            } else {
-//                telemetry.addLine("No tag detected");
-//            }
         } else {
             mosaic = MOSAIC.NONE;
         }
@@ -569,7 +650,11 @@ public class WARHOGAutoRefactored extends OpMode {
     public void loop() {
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
-        autonomousPathUpdate();
+        try { //TODO see if this affects anything, it is because outtake needing to spin hopper based on time.
+            autonomousPathUpdate();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
