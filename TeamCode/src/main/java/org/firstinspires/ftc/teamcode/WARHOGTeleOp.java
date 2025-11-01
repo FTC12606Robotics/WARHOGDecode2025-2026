@@ -139,7 +139,7 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //Launcher/Outtake
             if (spinToggle && launchTrigger <= .05) {
-                outtake.spinLauncher(.6);
+                outtake.spinLauncher(.8);
             }
             else if (!spinToggle && launchTrigger <= 0.05){
                 outtake.spinLauncher(launcherSpeed);
