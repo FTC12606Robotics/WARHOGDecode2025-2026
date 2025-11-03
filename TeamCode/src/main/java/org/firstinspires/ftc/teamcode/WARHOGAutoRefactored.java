@@ -53,7 +53,7 @@ public class WARHOGAutoRefactored extends OpMode {
     private final Pose endPoseCloseRed = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarRed = new Pose(87.5, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
     private final Pose scorePoseFarRed = new Pose(86.5, 19, Math.toRadians(70)); // Second Scoring Pose of our robot.
-    private final Pose endPoseFarRed = new Pose(116, 18, Math.toRadians(0)); // Second ending position outside of zone for points
+    private final Pose endPoseFarRed = new Pose(110, 12, Math.toRadians(0)); // Second ending position outside of zone for points
 
     private final Pose startPoseCloseBlue = new Pose(21, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseBlue = new Pose(54, 85, Math.toRadians(90)); // position to check mosaic pattern from obelisk
@@ -61,7 +61,7 @@ public class WARHOGAutoRefactored extends OpMode {
     private final Pose endPoseCloseBlue = new Pose(54, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarBlue = new Pose(57, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
     private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(115)); // Second Scoring Pose of our robot.
-    private final Pose endPoseFarBlue = new Pose(36, 18, Math.toRadians(180)); // Second ending position outside of zone for points
+    private final Pose endPoseFarBlue = new Pose(42, 12, Math.toRadians(180)); // Second ending position outside of zone for points
 
     private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue;
     private PathChain endCloseRed, endFarRed, endCloseBlue, endFarBlue, checkScoreCloseRed, checkScoreCloseBlue;
