@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
+import static java.lang.Math.PI;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -46,21 +47,21 @@ public class WARHOGAutoRefactored extends OpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
 
-    private final Pose startPoseCloseRed = new Pose(23, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
-    private final Pose checkPoseCloseRed = new Pose(54, 85, Math.toRadians(90)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseRed = new Pose(56, 90, Math.toRadians(131)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose endPoseCloseRed = new Pose(54, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
-    private final Pose startPoseFarRed = new Pose(37, 121, Math.toRadians(0)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarRed = new Pose(43, 130, Math.toRadians(0)); // Second Scoring Pose of our robot.
-    private final Pose endPoseFarRed = new Pose(49, 135, Math.toRadians(0)); // Second ending position outside of zone for points
+    private final Pose startPoseCloseRed = new Pose(123, 128, Math.toRadians(38)); // first start Pose of our robot, close to goal
+    private final Pose checkPoseCloseRed = new Pose(90, 85, Math.toRadians(90)); // position to check mosaic pattern from obelisk
+    private final Pose scorePoseCloseRed = new Pose(88, 90, Math.toRadians(49)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose endPoseCloseRed = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
+    private final Pose startPoseFarRed = new Pose(87.5, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
+    private final Pose scorePoseFarRed = new Pose(86.5, 19, Math.toRadians(70)); // Second Scoring Pose of our robot.
+    private final Pose endPoseFarRed = new Pose(110, 12, Math.toRadians(0)); // Second ending position outside of zone for points
 
-    private final Pose startPoseCloseBlue = new Pose(121, 128, Math.toRadians(138)); // first start Pose of our robot, close to goal
-    private final Pose checkPoseCloseBlue = new Pose(90, 85, Math.toRadians(90)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseBlue = new Pose(88, 90, Math.toRadians(49)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose endPoseCloseBlue = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
+    private final Pose startPoseCloseBlue = new Pose(21, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
+    private final Pose checkPoseCloseBlue = new Pose(54, 85, Math.toRadians(90)); // position to check mosaic pattern from obelisk
+    private final Pose scorePoseCloseBlue = new Pose(55, 90, Math.toRadians(140)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose endPoseCloseBlue = new Pose(54, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarBlue = new Pose(57, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarBlue = new Pose(60, 24, Math.toRadians(116)); // Second Scoring Pose of our robot.
-    private final Pose endPoseFarBlue = new Pose(36, 18, Math.toRadians(0)); // Second ending position outside of zone for points
+    private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(115)); // Second Scoring Pose of our robot.
+    private final Pose endPoseFarBlue = new Pose(42, 12, Math.toRadians(180)); // Second ending position outside of zone for points
 
     private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue;
     private PathChain endCloseRed, endFarRed, endCloseBlue, endFarBlue, checkScoreCloseRed, checkScoreCloseBlue;
@@ -98,7 +99,7 @@ public class WARHOGAutoRefactored extends OpMode {
 
     public void buildPaths() {
         //This is our scorePreloads go from start to score, check goes from start to check pos,
-        scorePreloadCloseRed = new Path(new BezierLine(scorePoseCloseRed, scorePoseCloseRed));
+        scorePreloadCloseRed = new Path(new BezierLine(startPoseCloseRed, scorePoseCloseRed));
         scorePreloadCloseRed.setLinearHeadingInterpolation(startPoseCloseRed.getHeading(), scorePoseCloseRed.getHeading());
 
         checkCloseRed = new Path(new BezierLine(startPoseCloseRed, checkPoseCloseRed));
@@ -126,7 +127,7 @@ public class WARHOGAutoRefactored extends OpMode {
 
         checkScoreCloseBlue = follower.pathBuilder()
                 .addPath(new BezierLine(checkPoseCloseBlue, scorePoseCloseBlue))
-                .setLinearHeadingInterpolation(checkPoseCloseBlue.getHeading(), checkPoseCloseBlue.getHeading())
+                .setLinearHeadingInterpolation(checkPoseCloseBlue.getHeading(), scorePoseCloseBlue.getHeading())
                 .build();
 
         endCloseRed = follower.pathBuilder()
@@ -263,7 +264,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     /* TODO Score Sample */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.9); //Can change based on close/far now
+                    outtake.spinLauncher(.80); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
@@ -429,7 +430,7 @@ public class WARHOGAutoRefactored extends OpMode {
                     /* TODO Score Artifacts */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.9); //Can change based on close/far now
+                    outtake.spinLauncher(.80); //Can change based on close/far now
                     if (mosaic == MOSAIC.PPG || mosaic == MOSAIC.NONE){ //score accordingly, none default is ppg
                         //spin left .5
                         outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
@@ -503,12 +504,12 @@ public class WARHOGAutoRefactored extends OpMode {
     public void init() {
 
         //"BNO055IMU" for Main, "BHI260IMU" for Pushbot
-        try {
+        /*try {
             Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO probably need a way to use these outside of init function
         } catch (InterruptedException e) {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);
-        }
+        }*/
         aprilTagVision = new AprilTagVision(hardwareMap);
         outtake = new Outtake(hardwareMap, telemetry);
 
@@ -519,7 +520,7 @@ public class WARHOGAutoRefactored extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(startPoseCloseRed); //Based on the default start position set earlier
+        //follower.setStartingPose(startPoseCloseRed); //Based on the default start position set earlier
 
         telemetry.setMsTransmissionInterval(50);
     }
@@ -569,13 +570,13 @@ public class WARHOGAutoRefactored extends OpMode {
         }
 
         //Set starting config
-        if (currentGamepad1.b) {
+        if (currentGamepad1.b && !previousGamepad1.b) {
             color = COLOR.RED;
         }
         if (currentGamepad1.x) {
             color = COLOR.BLUE;
         }
-        if (currentGamepad1.left_bumper) {
+        if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
             if (startPos == STARTPOS.GOAL) {
                 startPos = STARTPOS.FAR;
             } else if (startPos == STARTPOS.FAR) {
@@ -591,7 +592,8 @@ public class WARHOGAutoRefactored extends OpMode {
         telemetry.addData("color (x/b)", color);
         telemetry.addData("launchPos (lbump)", startPos);
         telemetry.addData("Speed (a/y)", speed);
-        telemetry.addData("startSleep (up/down)", startSleep);
+        //telemetry.addData("startSleep (up/down)", startSleep);
+        //telemetry.addData("Heading: ", follower.getHeading());
         telemetry.addLine();
         telemetry.addData("Use Camera? (lsbtn)", useCamera);
 
@@ -659,7 +661,8 @@ public class WARHOGAutoRefactored extends OpMode {
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("heading", follower.getPose().getHeading()*180/PI);
+        telemetry.addData("Pattern: ", mosaic);
         telemetry.update();
     }
 
