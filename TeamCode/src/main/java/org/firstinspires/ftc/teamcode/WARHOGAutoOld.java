@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="WARHOGAuto", group="")
-public class WARHOGAuto extends LinearOpMode {
-    public WARHOGAuto() throws InterruptedException {}
+@Autonomous(name="WARHOGAutoOld", group="")
+public class WARHOGAutoOld extends LinearOpMode {
+    public WARHOGAutoOld() throws InterruptedException {}
 
     private enum MOSAIC {PPG, PGP, GPP, NONE} //PPG=23, PGP=22, GPP=21
     private enum STARTPOS {FAR, GOAL} //Launch zones
