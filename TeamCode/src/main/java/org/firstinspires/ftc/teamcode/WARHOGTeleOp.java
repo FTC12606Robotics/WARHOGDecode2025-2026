@@ -98,7 +98,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             //set up vectors
             joyx = currentGamepad1.left_stick_x;
             joyy = -currentGamepad1.left_stick_y;
-            joyz = -currentGamepad1.right_stick_x;
+            joyz = currentGamepad1.right_stick_x;
             gas = currentGamepad1.right_trigger*(1-baseSpeed);
             brake = -currentGamepad1.left_trigger*(baseSpeed);
 

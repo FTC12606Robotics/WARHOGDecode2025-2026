@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+@Disabled
 @Autonomous(name="WARHOGAutoOld", group="")
 public class WARHOGAutoOld extends LinearOpMode {
     public WARHOGAutoOld() throws InterruptedException {}
