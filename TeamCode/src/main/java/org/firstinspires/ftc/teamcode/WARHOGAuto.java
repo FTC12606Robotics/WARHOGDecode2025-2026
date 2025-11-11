@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="WARHOGAutoNew", group="")
-public class WARHOGAutoNew extends OpMode {
-    public WARHOGAutoNew() throws InterruptedException {}
+@Autonomous(name="WARHOGAuto", group="")
+public class WARHOGAuto extends OpMode {
+    public WARHOGAuto() throws InterruptedException {}
     private Outtake outtake;
     private AprilTagVision aprilTagVision;
 

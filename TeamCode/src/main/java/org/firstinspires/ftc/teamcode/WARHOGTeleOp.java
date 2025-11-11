@@ -21,7 +21,8 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
                 hopperSpeed, hopperStickSpeed, hopperGasSpeed,pistonPos, launchTrigger;
-        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston, spinToggle = false;
+        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston,
+                spinFastToggle = false, spinSlowToggle = false, turnHopperMagRight = false, turnHopperMagLeft = false;
         int timerCount; // to try and time a spin up during launch sequence
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
@@ -75,7 +76,12 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //toggle on and off the launch motors
             if (currentGamepad2.a && !previousGamepad2.a){
-                spinToggle = !spinToggle;
+                spinFastToggle = false;
+                spinSlowToggle = !spinSlowToggle;
+            }
+            if (currentGamepad2.y && !previousGamepad2.y){
+                spinSlowToggle = false;
+                spinFastToggle = !spinFastToggle;
             }
 
             //code to switch between field centric and bot centric drive
@@ -106,6 +112,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             hopperStickSpeed = currentGamepad2.right_stick_x;
             hopperGasSpeed = currentGamepad2.left_trigger*(1-hopperSpeed);
 
+            turnHopperMagLeft = currentGamepad2.dpad_left && !previousGamepad2.dpad_left;
+            turnHopperMagRight = currentGamepad2.dpad_right && !previousGamepad2.dpad_right;
+
             pistonPos = outtake.pistonPosition();
 
             //limit launcher speed
@@ -128,9 +137,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             //set and print motor powers
             double[] motorPowers = drivetrain.driveVectors(centricity, joyx, joyy, joyz, baseSpeed+gas+brake);
             //For drive motor debugging
-            /*for (double line:motorPowers){
-                telemetry.addLine( Double.toString(line) );
-            }*/
+            //for (double line:motorPowers){telemetry.addLine( Double.toString(line) );}
 
             //reset the angle
             if(resetDriveAngle){
@@ -138,19 +145,28 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Launcher/Outtake
-            if (spinToggle && launchTrigger <= .05) {
+            if (spinFastToggle && launchTrigger <= .05) {
                 outtake.spinLauncher(.8);
             }
-            else if (!spinToggle && launchTrigger <= 0.05){
+            else if (spinSlowToggle && launchTrigger <= .05) {
+                outtake.spinLauncher(.6);
+            }
+            else if (!spinFastToggle && !spinSlowToggle && launchTrigger <= 0.05){
                 outtake.spinLauncher(launcherSpeed);
             }
 
-            //Spin Hopper TEST
+            //Spin Hopper
             if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
             }
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
+            }
+            else if (turnHopperMagLeft) {
+                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.LEFT, .4);
+            }
+            else if (turnHopperMagRight) {
+                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.RIGHT, .4);
             }
             else {
                 outtake.stopHopper();
@@ -206,6 +222,7 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //end step
             telemetry.update();
+            outtake.update();
         }
 
     }

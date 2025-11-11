@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -15,9 +16,14 @@ public class Outtake {
 
     private final CRServo hopper;
     public enum HOPPERDIRECTION {RIGHT, LEFT}
+    private enum HopperState {IDLE, TURNING}
+    private HopperState hopperState = HopperState.IDLE;
+    public DigitalChannel magSwitch;
+
     private final Servo piston;
     private final double pistonIn = 0;
     private final double pistonOut = .35;
+
     private final Servo rightPin;
     private final Servo leftPin;
     public enum PINS {RIGHT, LEFT, BOTH}
@@ -43,6 +49,8 @@ public class Outtake {
         piston = hardwareMap.get(Servo.class, "piston");
         retractPiston();
 
+        DigitalChannel magSwitch = hardwareMap.get(DigitalChannel.class, "magSwitch");
+        magSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         this.telemetry = telemetry;
     }
@@ -113,8 +121,36 @@ public class Outtake {
         stopHopper();
     }
 
+    //Auto: Turn the hopper based on magnet trigger
+    public void turnHopperMagAuto(HOPPERDIRECTION direction, double speed){
+        while (magSwitch.getState()){
+            spinHopper(direction, speed);
+        }
+        stopHopper();
+    }
+
+    //TeleOp: Turn the hopper based on magnet trigger
     public void turnHopperMag(HOPPERDIRECTION direction, double speed){
-        //Turn the hopper based on magnet positions for meet 2
+        spinHopper(direction, speed);
+        hopperState = HopperState.TURNING;
+    }
+
+    // Call this every loop in TeleOp, to make it asynchronous!
+    public void update() {
+        switch (hopperState) {
+            case TURNING:
+                boolean isTriggered = !magSwitch.getState();
+                if (isTriggered) {
+                    stopHopper();
+                    hopperState = HopperState.IDLE;
+                }
+                break;
+
+            case IDLE:
+            default:
+                // nothing to do
+                break;
+        }
     }
 
     //Extend Piston
