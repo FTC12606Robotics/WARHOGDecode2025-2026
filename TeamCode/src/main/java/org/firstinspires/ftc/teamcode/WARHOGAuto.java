@@ -25,6 +25,7 @@ public class WARHOGAuto extends OpMode {
     private enum MOTIF {PPG, PGP, GPP, NONE} //PPG=23, PGP=22, GPP=21
     private enum STARTPOS {FAR, GOAL} //Launch zones
     private enum COLOR {RED, BLUE} //Start Color
+    private enum LEAVE {YES, NO}
 
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad currentGamepad2 = new Gamepad();
@@ -38,9 +39,11 @@ public class WARHOGAuto extends OpMode {
 
     double hopperRotationMSec = 1000; // approx milli seconds to rotate hopper 1 position at .2 speed
 
-    private MOTIF motif = MOTIF.NONE; //Set default
-    private STARTPOS startPos = STARTPOS.GOAL; //Set default
+    //Set Default
+    private MOTIF motif = MOTIF.NONE;
+    private STARTPOS startPos = STARTPOS.GOAL;
     private COLOR color = COLOR.RED;
+    private LEAVE leave = LEAVE.NO;
 
     //====================FOR PEDROPATHING====================
     private Follower follower;
@@ -63,7 +66,7 @@ public class WARHOGAuto extends OpMode {
     private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(115)); // Second Scoring Pose of our robot.
     private final Pose endPoseFarBlue = new Pose(42, 12, Math.toRadians(180)); // Second ending position outside of zone for points
 
-    private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue;
+    private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue, leaveCloseBlue, leaveCloseRed, leaveFarBlue, leaveFarRed;
     private PathChain endCloseRed, endFarRed, endCloseBlue, endFarBlue, checkScoreCloseRed, checkScoreCloseBlue;
     //====================FOR PEDROPATHING====================
 
@@ -100,46 +103,53 @@ public class WARHOGAuto extends OpMode {
     public void shootArtifacts() throws InterruptedException{
         if (motif == MOTIF.PPG || motif == MOTIF.NONE){ //score accordingly, none default is ppg
             //spin left .5
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
             sleep(500);
             //launch
             outtake.runPiston();
             //continue spin left 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
             //continue spin left 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
         }
         else if (motif == MOTIF.GPP){
             //spin right .5
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, .5*hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
             sleep(500);
             //launch
             outtake.runPiston();
             //continue spin right 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
             //continue spin right 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
         }
         else if (motif == MOTIF.PGP){
             //spin left .5
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.LEFT, .2, .5*hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
             sleep(500);
             //launch
             outtake.runPiston();
             // spin right 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
             //continue spin right 1
-            outtake.turnHopperTime(Outtake.HOPPERDIRECTION.RIGHT, .2, hopperRotationMSec);
+            outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            sleep(500);
             //launch
             outtake.runPiston();
         }
@@ -164,6 +174,18 @@ public class WARHOGAuto extends OpMode {
 
         scorePreloadFarBlue = new Path(new BezierLine(startPoseFarBlue, scorePoseFarBlue));
         scorePreloadFarBlue.setLinearHeadingInterpolation(startPoseFarBlue.getHeading(), scorePoseFarBlue.getHeading());
+
+        leaveCloseBlue = new Path(new BezierLine(startPoseCloseBlue, endPoseCloseBlue));
+        leaveCloseBlue.setLinearHeadingInterpolation(startPoseCloseBlue.getHeading(), endPoseCloseBlue.getHeading());
+
+        leaveCloseRed = new Path(new BezierLine(startPoseCloseRed, endPoseCloseRed));
+        leaveCloseRed.setLinearHeadingInterpolation(startPoseCloseRed.getHeading(), endPoseCloseRed.getHeading());
+
+        leaveFarBlue = new Path(new BezierLine(startPoseFarBlue, endPoseFarBlue));
+        leaveFarBlue.setLinearHeadingInterpolation(startPoseFarBlue.getHeading(), endPoseFarBlue.getHeading());
+
+        leaveFarRed = new Path(new BezierLine(startPoseFarRed, endPoseFarRed));
+        leaveFarRed.setLinearHeadingInterpolation(startPoseFarRed.getHeading(), endPoseFarRed.getHeading());
         //Here is an example for Constant Interpolation
         //scorePreload.setConstantInterpolation(startPose.getHeading());
 
@@ -206,12 +228,24 @@ public class WARHOGAuto extends OpMode {
             //============Close Red===========
             case 0:
                 if (useCamera){
-                    follower.followPath(checkCloseRed);
-                    setPathState(1);
+                    if (leave == LEAVE.NO) {
+                        follower.followPath(checkCloseRed);
+                        setPathState(1);
+                    }
+                    if (leave == LEAVE.YES) {
+                        follower.followPath(leaveCloseRed);
+                        setPathState(3);
+                    }
                 }
                 else{
-                    follower.followPath(scorePreloadCloseRed);
-                    setPathState(2);
+                    if (leave == LEAVE.NO) {
+                        follower.followPath(scorePreloadCloseRed);
+                        setPathState(2);
+                    }
+                    if (leave == LEAVE.YES) {
+                        follower.followPath(leaveCloseRed);
+                        setPathState(3);
+                    }
                 }
                 break;
             case 1:
@@ -251,9 +285,8 @@ public class WARHOGAuto extends OpMode {
                 }
                 break;
             case 3:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the ending position */
                 if(!follower.isBusy()) {
-                    /* Score Sample */
 
                     setPathState(-1); //End route
                 }
@@ -261,8 +294,14 @@ public class WARHOGAuto extends OpMode {
 
             //==========Far Red==========
             case 4:
-                follower.followPath(scorePreloadFarRed);
-                setPathState(5);
+                if (leave == LEAVE.NO){
+                    follower.followPath(scorePreloadFarRed);
+                    setPathState(5);
+                }
+                else if (leave == LEAVE.YES){
+                    follower.followPath(leaveFarRed);
+                    setPathState(6);
+                }
                 break;
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
@@ -291,12 +330,24 @@ public class WARHOGAuto extends OpMode {
             //==========Close Blue==========
             case 7:
                 if (useCamera){
-                    follower.followPath(checkCloseBlue);
-                    setPathState(8);
+                    if (leave == LEAVE.NO) {
+                        follower.followPath(checkCloseBlue);
+                        setPathState(8);
+                    }
+                    if (leave == LEAVE.YES) {
+                        follower.followPath(leaveCloseBlue);
+                        setPathState(10);
+                    }
                 }
                 else{
-                    follower.followPath(scorePreloadCloseBlue);
-                    setPathState(9);
+                    if (leave == LEAVE.NO) {
+                        follower.followPath(scorePreloadCloseBlue);
+                        setPathState(9);
+                    }
+                    if (leave == LEAVE.YES) {
+                        follower.followPath(leaveCloseBlue);
+                        setPathState(10);
+                    }
                 }
                 break;
             case 8:
@@ -340,8 +391,14 @@ public class WARHOGAuto extends OpMode {
 
             //==========Far Blue==========
             case 11:
-                follower.followPath(scorePreloadFarBlue);
-                setPathState(12);
+                if (leave == LEAVE.NO){
+                    follower.followPath(scorePreloadFarBlue);
+                    setPathState(12);
+                }
+                else if (leave == LEAVE.YES){
+                    follower.followPath(leaveFarBlue);
+                    setPathState(13);
+                }
                 break;
             case 12:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
@@ -380,7 +437,7 @@ public class WARHOGAuto extends OpMode {
 
         //"BNO055IMU" for Main, "BHI260IMU" for Pushbot
         /*try {
-            Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO probably need a way to use these outside of init function
+            Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO Do we even need drivtrain for auto?
         } catch (InterruptedException e) {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);
@@ -459,6 +516,14 @@ public class WARHOGAuto extends OpMode {
             }
         }
 
+        if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
+            if (leave == LEAVE.NO) {
+                leave = LEAVE.YES;
+            } else if (leave == LEAVE.YES) {
+                leave = LEAVE.NO;
+            }
+        }
+
         //For camera usage in decision making
         if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button) {
             useCamera = !useCamera;
@@ -466,6 +531,7 @@ public class WARHOGAuto extends OpMode {
 
         telemetry.addData("color (x/b)", color);
         telemetry.addData("launchPos (lbump)", startPos);
+        telemetry.addData("leave (rbump)", leave);
         telemetry.addData("Speed (a/y)", speed);
         //telemetry.addData("startSleep (up/down)", startSleep);
         //telemetry.addData("Heading: ", follower.getHeading());

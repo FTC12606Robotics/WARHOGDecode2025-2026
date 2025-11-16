@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -49,7 +51,7 @@ public class Outtake {
         piston = hardwareMap.get(Servo.class, "piston");
         retractPiston();
 
-        DigitalChannel magSwitch = hardwareMap.get(DigitalChannel.class, "magSwitch");
+        magSwitch = hardwareMap.get(DigitalChannel.class, "magSwitch");
         magSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         this.telemetry = telemetry;
@@ -122,9 +124,12 @@ public class Outtake {
     }
 
     //Auto: Turn the hopper based on magnet trigger
-    public void turnHopperMagAuto(HOPPERDIRECTION direction, double speed){
-        while (magSwitch.getState()){
-            spinHopper(direction, speed);
+    public void turnHopperMagAuto(HOPPERDIRECTION direction, double speed) throws InterruptedException {
+        boolean isTriggered = false;
+        spinHopper(direction, speed);
+        sleep(100);
+        while (!isTriggered){
+            isTriggered = !magSwitch.getState();
         }
         stopHopper();
     }
