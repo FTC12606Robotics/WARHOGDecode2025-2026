@@ -13,8 +13,20 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Outtake {
-    private final DcMotor launchMotor;
-    private final DcMotor launchMotor2;
+    private final DcMotorEx launchMotor;
+    private final DcMotorEx launchMotor2;
+
+    public enum TICKSPEED {OFF(0), SLOW(800), MEDIUM(1500), FAST(3000);
+        private int value;
+
+        private TICKSPEED(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     private final CRServo hopper;
     public enum HOPPERDIRECTION {RIGHT, LEFT}
@@ -35,13 +47,17 @@ public class Outtake {
     private final Telemetry telemetry;
 
     Outtake(HardwareMap hardwareMap, Telemetry telemetry){
-        launchMotor = hardwareMap.get(DcMotor.class, "launchMotor");
-        launchMotor.setDirection(DcMotor.Direction.FORWARD);
+        launchMotor = hardwareMap.get(DcMotorEx.class, "launchMotor");
+        launchMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        launchMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        launchMotor.setVelocityPIDFCoefficients(10.0, 3.0, 0.0, 12.0);
         //launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //Doesn't work on 1620 rpm 5203 motors
 
-        launchMotor2 = hardwareMap.get(DcMotor.class, "launchMotor2");
-        launchMotor2.setDirection(DcMotor.Direction.FORWARD);
+        launchMotor2 = hardwareMap.get(DcMotorEx.class, "launchMotor2");
+        launchMotor2.setDirection(DcMotorEx.Direction.FORWARD);
+        launchMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        launchMotor2.setVelocityPIDFCoefficients(10.0, 3.0, 0.0, 12.0);
         //launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //Doesn't work on 1620 rpm 5203 motors
 
@@ -59,8 +75,26 @@ public class Outtake {
 
     //Spin wheels for launcher
     public void spinLauncher(double power){
-        launchMotor.setPower(-power); //neg to spin opposite directions
+        launchMotor.setPower(power);
         launchMotor2.setPower(power);
+
+        //For Debugging
+        //telemetry.addData("Launch Motor 1 Power: ", launchMotor.getPower());
+        //telemetry.addData("Launch Motor 2 Power: ", launchMotor2.getPower());
+    }
+
+    //Spin wheels for launcher
+    public void spinLauncherVelocity(TICKSPEED power){
+        launchMotor.setVelocity(power.getValue());
+        launchMotor2.setVelocity(power.getValue());
+
+        //For Debugging
+        //telemetry.addData("Launch Motor 1 Power: ", launchMotor.getPower());
+        //telemetry.addData("Launch Motor 2 Power: ", launchMotor2.getPower());
+    }
+    public void spinLauncherVelocity(double power){
+        launchMotor.setVelocity(power);
+        launchMotor2.setVelocity(power);
 
         //For Debugging
         //telemetry.addData("Launch Motor 1 Power: ", launchMotor.getPower());
@@ -70,13 +104,16 @@ public class Outtake {
     // Return launch motor powers as doubles
     public double getSpinPower (int motor){
         if (motor == 1){
-            return launchMotor.getPower();
+            //return launchMotor.getPower();
+            return launchMotor.getVelocity();
         }
         else if (motor == 2){
-            return launchMotor2.getPower();
+            //return launchMotor2.getPower();
+            return launchMotor2.getVelocity();
         }
         else {
-            return launchMotor.getPower();
+            //return launchMotor.getPower();
+            return launchMotor.getVelocity();
         }
     }
 

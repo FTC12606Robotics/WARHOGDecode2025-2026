@@ -17,6 +17,7 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
         Outtake outtake = new Outtake(hardwareMap, telemetry);
+        //AprilTagVision vision = new AprilTagVision(hardwareMap);
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
@@ -146,13 +147,15 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //Launcher/Outtake
             if (spinFastToggle && launchTrigger <= .05) {
-                outtake.spinLauncher(.8);
+                //outtake.spinLauncher(.8);
+                outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM);
             }
             else if (spinSlowToggle && launchTrigger <= .05) {
-                outtake.spinLauncher(.6);
+                //outtake.spinLauncher(.6);
+                outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW);
             }
             else if (!spinFastToggle && !spinSlowToggle && launchTrigger <= 0.05){
-                outtake.spinLauncher(launcherSpeed);
+                outtake.spinLauncherVelocity(launcherSpeed*2000); //Converted to ticks
             }
 
             //Spin Hopper
@@ -163,10 +166,10 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
             }
             else if (turnHopperMagLeft) {
-                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.LEFT, .4);
+                //outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .1);
             }
             else if (turnHopperMagRight) {
-                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.RIGHT, .4);
+                //outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .1);
             }
             else {
                 outtake.stopHopper();
@@ -197,13 +200,13 @@ public class WARHOGTeleOp extends LinearOpMode {
                 timerCount = 0;
             }
             else if (launchTrigger >= .2 && launchTrigger < .9){
-                outtake.spinLauncher(staticLaunchSpeed);
+                outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM);
                 telemetry.addLine("Auto Launcher Status: ARMING");
                 timerCount += 1;
             }
             else if (launchTrigger >= .9){
                 //Continue to spin up the launcher
-                outtake.spinLauncher(staticLaunchSpeed);
+                outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM);
                 timerCount += 1;
                 //To basically "cheat" a launch timer
                 if (timerCount >= 120 && timerCount <= 140) { //TODO come up with a better threshold number

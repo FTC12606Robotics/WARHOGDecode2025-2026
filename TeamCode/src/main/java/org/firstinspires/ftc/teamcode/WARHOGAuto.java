@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 import static java.lang.Math.PI;
 
+import android.health.connect.datatypes.MealType;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -275,9 +277,9 @@ public class WARHOGAuto extends OpMode {
                     /* TODO Score Artifacts */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.75); //Can change based on close/far now
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
                     shootArtifacts();
-                    outtake.spinLauncher(0);
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseRed,true);
@@ -309,9 +311,9 @@ public class WARHOGAuto extends OpMode {
                     /* TODO Score Sample */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.8); //Can change based on close/far now
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
                     shootArtifacts();
-                    outtake.spinLauncher(0);
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarRed,true); //TODO figure out how this works
@@ -371,9 +373,9 @@ public class WARHOGAuto extends OpMode {
                     /* TODO Score Artifacts */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.75); //Can change based on close/far now
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
                     shootArtifacts();
-                    outtake.spinLauncher(0);
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseBlue,true);
@@ -406,9 +408,9 @@ public class WARHOGAuto extends OpMode {
                     /* TODO Score Artifacts */
 
                     //SpinLaunchMotors
-                    outtake.spinLauncher(.8); //Can change based on close/far now
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
                     shootArtifacts();
-                    outtake.spinLauncher(0);
+                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarBlue,true); //TODO figure out how this works
@@ -603,6 +605,7 @@ public class WARHOGAuto extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading()*180/PI);
+        //telemetry.addData("launcher speed", outtake.getSpinPower(1));
         telemetry.addData("Motif: ", motif);
         telemetry.update();
     }
