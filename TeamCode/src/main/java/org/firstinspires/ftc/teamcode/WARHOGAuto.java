@@ -54,18 +54,18 @@ public class WARHOGAuto extends OpMode {
 
     private final Pose startPoseCloseRed = new Pose(123, 128, Math.toRadians(38)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseRed = new Pose(90, 85, Math.toRadians(100)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseRed = new Pose(88, 90, Math.toRadians(49)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose scorePoseCloseRed = new Pose(88, 87, Math.toRadians(53)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose endPoseCloseRed = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarRed = new Pose(87.5, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarRed = new Pose(86.5, 19, Math.toRadians(70)); // Second Scoring Pose of our robot.
+    private final Pose scorePoseFarRed = new Pose(86.5, 19, Math.toRadians(74)); // Second Scoring Pose of our robot.
     private final Pose endPoseFarRed = new Pose(110, 12, Math.toRadians(0)); // Second ending position outside of zone for points
 
     private final Pose startPoseCloseBlue = new Pose(21, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseBlue = new Pose(54, 85, Math.toRadians(80)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseBlue = new Pose(55, 90, Math.toRadians(140)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose scorePoseCloseBlue = new Pose(55, 87, Math.toRadians(134)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose endPoseCloseBlue = new Pose(54, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarBlue = new Pose(57, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(115)); // Second Scoring Pose of our robot.
+    private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(110)); // Second Scoring Pose of our robot.
     private final Pose endPoseFarBlue = new Pose(42, 12, Math.toRadians(180)); // Second ending position outside of zone for points
 
     private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue, leaveCloseBlue, leaveCloseRed, leaveFarBlue, leaveFarRed;
@@ -106,52 +106,52 @@ public class WARHOGAuto extends OpMode {
         if (motif == MOTIF.PPG || motif == MOTIF.NONE){ //score accordingly, none default is ppg
             //spin left .5
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             //continue spin left 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             //continue spin left 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
         }
         else if (motif == MOTIF.GPP){
             //spin right .5
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             //continue spin right 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             //continue spin right 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
         }
         else if (motif == MOTIF.PGP){
             //spin left .5
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             // spin right 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
             //continue spin right 1
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
-            sleep(500);
+            sleep(1500);
             //launch
             outtake.runPiston();
         }

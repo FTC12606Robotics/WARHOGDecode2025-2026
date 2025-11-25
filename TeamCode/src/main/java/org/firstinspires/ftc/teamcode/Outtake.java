@@ -16,7 +16,7 @@ public class Outtake {
     private final DcMotorEx launchMotor;
     private final DcMotorEx launchMotor2;
 
-    public enum TICKSPEED {OFF(0), SLOW(800), MEDIUM(1500), FAST(3000);
+    public enum TICKSPEED {OFF(0), SLOW(2000), MEDIUM(2200), FAST(3000);
         private int value;
 
         private TICKSPEED(int value) {

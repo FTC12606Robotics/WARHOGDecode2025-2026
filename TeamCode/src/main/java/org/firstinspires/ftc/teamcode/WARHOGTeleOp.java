@@ -155,7 +155,7 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW);
             }
             else if (!spinFastToggle && !spinSlowToggle && launchTrigger <= 0.05){
-                outtake.spinLauncherVelocity(launcherSpeed*2000); //Converted to ticks
+                outtake.spinLauncherVelocity(launcherSpeed*2600); //Converted to ticks
             }
 
             //Spin Hopper
@@ -165,12 +165,12 @@ public class WARHOGTeleOp extends LinearOpMode {
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
             }
-            else if (turnHopperMagLeft) {
-                //outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .1);
+            /*else if (turnHopperMagLeft) {
+                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .1);
             }
             else if (turnHopperMagRight) {
-                //outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .1);
-            }
+                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .1);
+            }*/
             else {
                 outtake.stopHopper();
             }
