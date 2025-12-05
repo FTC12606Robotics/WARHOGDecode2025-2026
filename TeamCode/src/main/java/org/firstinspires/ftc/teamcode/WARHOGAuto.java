@@ -102,7 +102,7 @@ public class WARHOGAuto extends OpMode {
         }
     }
 
-    public void shootArtifacts(Outtake.TICKSPEED speed) throws InterruptedException{
+    public void shootArtifacts(double speed) throws InterruptedException{
         if (motif == MOTIF.PPG || motif == MOTIF.NONE){ //score accordingly, none default is ppg
             //spin left .5
             outtake.spinLauncherVelocity(speed);
@@ -288,7 +288,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.SLOW);
+                    shootArtifacts(Outtake.TICKSPEED.SLOW.getValue());
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
@@ -323,7 +323,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.MEDIUM);
+                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
@@ -386,7 +386,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.SLOW);
+                    shootArtifacts(2100);
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
@@ -422,7 +422,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.MEDIUM);
+                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
