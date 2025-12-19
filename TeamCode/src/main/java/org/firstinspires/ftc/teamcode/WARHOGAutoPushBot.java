@@ -19,9 +19,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="WARHOGAuto", group="")
-public class WARHOGAuto extends OpMode {
-    public WARHOGAuto() throws InterruptedException {}
+@Autonomous(name="WARHOGAutoPushBot", group="")
+public class WARHOGAutoPushBot extends OpMode {
+    public WARHOGAutoPushBot() throws InterruptedException {}
     private Outtake outtake;
     private AprilTagVision aprilTagVision;
     private Drivetrain drivetrain;
@@ -101,8 +101,8 @@ public class WARHOGAuto extends OpMode {
                 motif = MOTIF.PPG;
             } else if (id == 20 || id == 24){
                 telemetry.addData("Range (m)", "%.2f", detection.ftcPose.range);
-                telemetry.addData("Bearing (deg)", "%.1f", detection.ftcPose.bearing);
-                targetHeading = detection.ftcPose.bearing;
+                telemetry.addData("Bearing (deg)", "%.1f", detection.ftcPose.elevation); //elevation because camera rotated
+                targetHeading = detection.ftcPose.elevation;
                 motif = MOTIF.NONE; // In case we pick up the goal mosaics
             }
         } else {
@@ -516,13 +516,13 @@ public class WARHOGAuto extends OpMode {
 
         //"BNO055IMU" for Main, "BHI260IMU" for Pushbot
         try {
-            drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
+            drivetrain = new Drivetrain(hardwareMap, telemetry, "BHI260IMU");
         } catch (InterruptedException e) {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);
         }
         aprilTagVision = new AprilTagVision(hardwareMap);
-        outtake = new Outtake(hardwareMap, telemetry);
+        //outtake = new Outtake(hardwareMap, telemetry);
 
         //Initialize for PedroPathing
         pathTimer = new Timer();

@@ -537,4 +537,27 @@ public class Drivetrain{
             telemetry.update(); //Can use this because this method won't be in anything realtime, as it stops everything.
         }
     }
+
+    //Turning to angle based on error
+    public void applyTurnCorrection(double angleErrorRad, double maxPower) {
+
+        final double kP = 1.6;        // tune this
+        final double minPower = 0.10; // prevents deadband
+
+        // Proportional turn
+        double turnPower = kP * angleErrorRad;
+
+        // Clamp
+        turnPower = Math.max(-maxPower, Math.min(maxPower, turnPower));
+
+        // Minimum power preserving sign
+        if (Math.abs(turnPower) < minPower) {
+            turnPower = Math.signum(turnPower) * minPower;
+        }
+
+        // Drive wheels (rotate in place)
+        move(DirectionMode.ROTATE, turnPower);
+    }
+
+
 }
