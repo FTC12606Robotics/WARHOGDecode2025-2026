@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Outtake {
     private final DcMotorEx launchMotor;
     private final DcMotorEx launchMotor2;
-    public enum TICKSPEED {OFF(0), SLOW(2000), MEDIUM(2200), FAST(3000);
+    public enum TICKSPEED {OFF(0), SLOW(1800), MEDIUM(2000), FAST(3000);
         private final int value;
         TICKSPEED(int value) {
             this.value = value;

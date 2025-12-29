@@ -72,8 +72,8 @@ public class Drivetrain{
             internalIMU.initialize(
                     new IMU.Parameters(
                         new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.UP, //TODO will need to change to actually work, REMEMBER this
-                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD))
+                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, //TODO will need to change to actually work, REMEMBER this
+                                RevHubOrientationOnRobot.UsbFacingDirection.UP))
              );
         }
         else {

@@ -104,9 +104,9 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
                 telemetry.addLine( Double.toString(line) );
             }*/
 
-            //reset the angle
+            //reset the drive angle for field centricity
             if(resetDriveAngle){
-                drivetrain.resetAngleData(Drivetrain.AngleType.HEADING);
+                drivetrain.resetHeading();
             }
 
 

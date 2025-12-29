@@ -201,13 +201,13 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //Piston extension
             if (runPiston){
-                /*if (pistonPos >= .1){
+                if (pistonPos >= .1){
                     outtake.retractPiston();
                 }
                 else{
                     outtake.extendPiston();
-                }*/
-                outtake.runPistonTeleopAuto();
+                }
+                //outtake.runPistonTeleopAuto();
             }
 
             //Single button launch sequence.
