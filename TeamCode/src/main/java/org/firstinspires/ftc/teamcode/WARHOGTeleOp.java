@@ -145,9 +145,9 @@ public class WARHOGTeleOp extends LinearOpMode {
             //For drive motor debugging
             //for (double line:motorPowers){telemetry.addLine( Double.toString(line) );}
 
-            //reset the angle
+            //reset the drive angle for field centricity
             if(resetDriveAngle){
-                drivetrain.resetAngleData(Drivetrain.AngleType.HEADING);
+                drivetrain.resetHeading();
             }
 
             //Launcher/Outtake

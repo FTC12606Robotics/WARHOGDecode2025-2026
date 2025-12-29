@@ -26,7 +26,6 @@ public class Drivetrain{
     private final DcMotor rightBackDrive;
     private IMU internalIMU;
     private final Telemetry telemetry;
-    //static final int TickPerRev = 10; // need to measure
 
     Drivetrain(HardwareMap hardwareMap, Telemetry telemetry, String imu) throws InterruptedException {
 
@@ -60,24 +59,7 @@ public class Drivetrain{
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-
-        /* // Set up the parameters with which we will use our IMU. Note that integration
-        // algorithm here just reports accelerations to the logcat log; it doesn't actually
-        // provide positional information.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);*/
-
+        //Set up the internal IMU
         //For the newer imu in the newer control hubs
         if (imu.equals("BHI260IMU")){
             telemetry.addLine("Initializing newer internal IMU");
@@ -148,13 +130,14 @@ public class Drivetrain{
         rightBackDrive.setPower(motorPowers[3]);
     }
 
-    //Just runs motors, USE ONLY FOR AUTO, I don't know why we need this
+    //Auto: Runs the motors based on time, no control
     private void RunMotorsForSeconds(double secs, double power) throws InterruptedException{
         setMotorPowers(power, power, power,power);
         sleep((long)(secs)*1000);
         setMotorPowers(0,0,0,0);
     }
 
+    //For what ever reason you need to set the power of one drive motor
     public void setIndividualPower(MotorPlacement pos, double pow) {
         switch (pos) {
             case LEFTFRONT:
@@ -234,28 +217,9 @@ public class Drivetrain{
         }
     }
 
-    //Resets the heading angle in the IMU, TODO might just want to simplify this to resetYaw()
-    public void resetAngleData(AngleType angle){
-
-        switch (angle){
-            default:
-            case YAW:
-            case Z:
-            case HEADING:
-                internalIMU.resetYaw();
-                break;
-
-            case PITCH:
-            case X:
-                //Can't reset the Pitch
-                break;
-
-            case ROLL:
-            case Y:
-                //Can't reset the Roll
-                break;
-
-        }
+    //Resets the heading angle in the IMU
+    public void resetHeading(){
+        internalIMU.resetYaw();
     }
 
     //TODO = TEST may not need angle offset with the new imu interface
@@ -303,7 +267,7 @@ public class Drivetrain{
         return motorPowers;
     }
 
-    // this function is designed for the auto part
+    //Auto: Move forward and backward takes Inches. Status: Working
     public void MoveForDis(double distance, double pow) throws InterruptedException {
 
         // calculate the distance, inches to ticks?
@@ -363,7 +327,7 @@ public class Drivetrain{
 
     }
 
-    // this function is designed for the auto part TODO = Test
+    //Auto: Move the bot sideways w/out turning takes Inches. Status: Unknown
     public void SideMoveForDis(double distance, double pow) {
 
         // calculate the distance
@@ -436,7 +400,7 @@ public class Drivetrain{
         rightBackDrive.setPower(0);
     }
 
-    //For auto, does not need imu data
+    //Auto: Turn the bot, does nto require and IMU. Status: Working
     public void RotateForDegree(int degree, double pow) {
 
         // calculate the degree
@@ -498,7 +462,7 @@ public class Drivetrain{
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    //For auto, but would require an imu
+    //Auto: Turn the bot using the internal IMU. Status: Unknown
     public void rotateToPosition(double targetAngle, double pow){
         //double angle = getIMUData()*180/PI; TODO = TEST
         double angle = getIMUAngleData(AngleType.HEADING)*180/PI;
