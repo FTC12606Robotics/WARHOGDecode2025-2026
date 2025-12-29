@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Outtake {
     private final DcMotorEx launchMotor;
     private final DcMotorEx launchMotor2;
-    public enum TICKSPEED {OFF(0), SLOW(1800), MEDIUM(2000), FAST(3000);
+    public enum TICKSPEED {OFF(0), SLOW(1900), MEDIUM(2000), FAST(2200);
         private final int value;
         TICKSPEED(int value) {
             this.value = value;
@@ -153,6 +153,10 @@ public class Outtake {
         spinHopper(direction, speed);
         hopperState = HopperState.TURNING;
         hasLeftMagnet = false;
+    }
+
+    public void turningOverride(){
+        hopperState = HopperState.IDLE;
     }
 
     private void updateHopper() {
