@@ -22,9 +22,9 @@ public class WARHOGTeleOp extends LinearOpMode {
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
-                hopperSpeed, hopperStickSpeed, hopperGasSpeed,pistonPos, launchTrigger;
+                hopperSpeed, hopperStickSpeed, hopperGasSpeed, pistonPos, intakePos, launchTrigger;
         boolean centricityToggle, resetDriveAngle, intakeToggle = false, intakeLift, runPiston,
-                spinFastToggle = false, spinSlowToggle = false, turnHopperMagRight = false, turnHopperMagLeft = false;
+                spinFastToggle = false, spinSlowToggle = false, turnHopperMagRight = false, turnHopperMagLeft = false, turning = false;
         int timerCount; // to try and time a spin up during launch sequence
 
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
@@ -121,6 +121,7 @@ public class WARHOGTeleOp extends LinearOpMode {
             turnHopperMagRight = currentGamepad2.dpad_right && !previousGamepad2.dpad_right;
 
             pistonPos = outtake.pistonPosition();
+            intakePos = intake.intakePosition();
 
             //limit launcher speed
             if (abs(launcherSpeed) > .9){
@@ -163,19 +164,24 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
 
             //Spin Hopper
+            //'turning' is the override
             if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
+                turning = false;
             }
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
+                turning = false;
             }
-            /*else if (turnHopperMagLeft) {
-                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .1);
+            else if (turnHopperMagLeft) {
+                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .5);
+                turning = true;
             }
             else if (turnHopperMagRight) {
-                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .1);
-            }*/
-            else {
+                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .5);
+                turning = true;
+            }
+            else if (!turning) {
                 outtake.stopHopper();
             }
 
@@ -183,23 +189,29 @@ public class WARHOGTeleOp extends LinearOpMode {
             if(intakeToggle) {
                 intake.spinIntake();
             }
-
             if(intakeLift){
-                intake.lift();
+                /*if (intakePos >= .1){
+                    intake.lower();
+                }
+                else{
+                    intake.lift();
+                }*/
+                intake.runIntake();
             }
 
             //Piston extension
             if (runPiston){
-                if (pistonPos >= .1){
+                /*if (pistonPos >= .1){
                     outtake.retractPiston();
                 }
                 else{
                     outtake.extendPiston();
-                }
+                }*/
+                outtake.runPistonTeleopAuto();
             }
 
             //Single button launch sequence.
-            if (launchTrigger >= .05 && launchTrigger < .2){
+            /*if (launchTrigger >= .05 && launchTrigger < .2){
                 outtake.retractPiston();
                 telemetry.addLine("Auto Launcher Status: RETRACTED");
                 timerCount = 0;
@@ -225,12 +237,13 @@ public class WARHOGTeleOp extends LinearOpMode {
                 else{
                     telemetry.addLine("Auto Launcher Status: WARNING: FIRING WHEN READY");
                 }
-            }
+            }*/
 
 
             //end step
             telemetry.update();
             outtake.update();
+            //intake.update();
         }
 
     }

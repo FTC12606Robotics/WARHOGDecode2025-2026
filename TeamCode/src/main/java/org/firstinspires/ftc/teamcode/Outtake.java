@@ -5,10 +5,11 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -29,9 +30,13 @@ public class Outtake {
     public enum HOPPERDIRECTION {RIGHT, LEFT}
     private enum HopperState {IDLE, TURNING}
     private HopperState hopperState = HopperState.IDLE;
+    private boolean hasLeftMagnet;
     public DigitalChannel magSwitch;
 
     private final Servo piston;
+    private enum PistonState {IDLE, EXTENDING, RETRACTING}
+    private PistonState pistonState = PistonState.IDLE;
+    private final ElapsedTime pistonTimer = new ElapsedTime();
     private final double pistonIn = 0;
     private final double pistonOut = .35;
 
@@ -62,6 +67,11 @@ public class Outtake {
         this.telemetry = telemetry;
     }
 
+    // Call this every loop in TeleOp, to make it asynchronous!
+    public void update(){
+        updateHopper();
+        updatePiston();
+    }
 
     //==========Launcher Logic==========
 
@@ -142,16 +152,28 @@ public class Outtake {
     public void turnHopperMag(HOPPERDIRECTION direction, double speed){
         spinHopper(direction, speed);
         hopperState = HopperState.TURNING;
+        hasLeftMagnet = false;
     }
 
-    // Call this every loop in TeleOp, to make it asynchronous!
-    public void update() {
+    private void updateHopper() {
         switch (hopperState) {
             case TURNING:
                 boolean isTriggered = !magSwitch.getState();
-                if (isTriggered) {
+
+                /*if (isTriggered) {
                     stopHopper();
                     hopperState = HopperState.IDLE;
+                }*/
+                if (!hasLeftMagnet) {
+                    if (!isTriggered) {
+                        hasLeftMagnet = true;
+                    }
+                } else {
+                    if (isTriggered) {
+                        stopHopper();
+                        hopperState = HopperState.IDLE;
+                        hasLeftMagnet = false;
+                    }
                 }
                 break;
 
@@ -182,8 +204,43 @@ public class Outtake {
         retractPiston();
     }
 
+    public void runPistonTeleopAuto(){
+        if (pistonPosition() >= .1){
+            retractPiston();
+            pistonState = PistonState.RETRACTING;
+        }
+        else{
+            extendPiston();
+            pistonState = PistonState.EXTENDING;
+        }
+
+        pistonTimer.reset();
+    }
+
     //Give piston position
     public double pistonPosition(){
         return piston.getPosition();
+    }
+
+    private void updatePiston(){
+        switch (pistonState) {
+            case EXTENDING:
+                if (pistonTimer.milliseconds() >= 250) {
+                    retractPiston();
+                    pistonState = PistonState.RETRACTING;
+                    pistonTimer.reset();
+                }
+
+            case RETRACTING:
+                if (pistonTimer.milliseconds() >= 250) {
+                    pistonState = PistonState.IDLE;
+                }
+                break;
+
+            case IDLE:
+            default:
+                // nothing to do
+                break;
+        }
     }
 }
