@@ -15,14 +15,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Outtake {
     private final DcMotorEx launchMotor;
     private final DcMotorEx launchMotor2;
-
     public enum TICKSPEED {OFF(0), SLOW(2000), MEDIUM(2200), FAST(3000);
-        private int value;
-
-        private TICKSPEED(int value) {
+        private final int value;
+        TICKSPEED(int value) {
             this.value = value;
         }
-
         public int getValue() {
             return value;
         }
@@ -37,12 +34,6 @@ public class Outtake {
     private final Servo piston;
     private final double pistonIn = 0;
     private final double pistonOut = .35;
-
-    private final Servo rightPin;
-    private final Servo leftPin;
-    public enum PINS {RIGHT, LEFT, BOTH}
-    private final double inPos = 10;
-    private final double outPos = 40;
 
     private final Telemetry telemetry;
 
@@ -61,8 +52,6 @@ public class Outtake {
         //launchMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //Doesn't work on 1620 rpm 5203 motors
 
-        rightPin = hardwareMap.get(Servo.class, "rightPin");
-        leftPin = hardwareMap.get(Servo.class, "leftPin");
         hopper = hardwareMap.get(CRServo.class, "hopper");
         piston = hardwareMap.get(Servo.class, "piston");
         retractPiston();
@@ -72,6 +61,9 @@ public class Outtake {
 
         this.telemetry = telemetry;
     }
+
+
+    //==========Launcher Logic==========
 
     //Spin wheels for launcher
     public void spinLauncher(double power){
@@ -84,14 +76,6 @@ public class Outtake {
     }
 
     //Spin wheels for launcher
-    public void spinLauncherVelocity(TICKSPEED power){
-        launchMotor.setVelocity(power.getValue());
-        launchMotor2.setVelocity(power.getValue());
-
-        //For Debugging
-        //telemetry.addData("Launch Motor 1 Power: ", launchMotor.getPower());
-        //telemetry.addData("Launch Motor 2 Power: ", launchMotor2.getPower());
-    }
     public void spinLauncherVelocity(double power){
         launchMotor.setVelocity(power);
         launchMotor2.setVelocity(power);
@@ -99,6 +83,9 @@ public class Outtake {
         //For Debugging
         //telemetry.addData("Launch Motor 1 Power: ", launchMotor.getPower());
         //telemetry.addData("Launch Motor 2 Power: ", launchMotor2.getPower());
+    }
+    public void spinLauncherVelocity(TICKSPEED power){      //To accept TICKSPEED as well
+        spinLauncherVelocity(power.getValue());
     }
 
     // Return launch motor powers as doubles
@@ -117,28 +104,8 @@ public class Outtake {
         }
     }
 
-    //For flicking the front pins
-    public void flickPin(PINS pin) throws InterruptedException {
 
-        switch (pin){
-            case LEFT:
-                leftPin.setPosition(outPos);
-                sleep(10);
-                leftPin.setPosition(inPos);
-                break;
-            case RIGHT:
-                rightPin.setPosition(outPos);
-                sleep(10);
-                rightPin.setPosition(inPos);
-                break;
-            case BOTH:
-                leftPin.setPosition(outPos);
-                rightPin.setPosition(outPos);
-                sleep(10);
-                leftPin.setPosition(inPos);
-                rightPin.setPosition(inPos);
-        }
-    }
+    //==========HOPPER LOGIC==========
 
     //Spin the hopper
     public void spinHopper(HOPPERDIRECTION direction, double speed){
@@ -195,6 +162,9 @@ public class Outtake {
         }
     }
 
+
+    //============PISTON LOGIC============
+
     //Extend Piston
     public void extendPiston(){
         piston.setPosition(pistonOut);
@@ -203,11 +173,6 @@ public class Outtake {
     //Retract Piston
     public void retractPiston(){
         piston.setPosition(pistonIn);
-    }
-
-    //Move Piston to any pos.
-    public void runPiston(double pos){
-        piston.setPosition(pos);
     }
 
     //Auto: Cycle the piston, for auto don't want to stop teleop

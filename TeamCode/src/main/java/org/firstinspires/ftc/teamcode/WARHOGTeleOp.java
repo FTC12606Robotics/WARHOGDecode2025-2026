@@ -17,12 +17,13 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
         Outtake outtake = new Outtake(hardwareMap, telemetry);
+        Intake intake = new Intake(hardwareMap, telemetry);
         //AprilTagVision vision = new AprilTagVision(hardwareMap);
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
                 hopperSpeed, hopperStickSpeed, hopperGasSpeed,pistonPos, launchTrigger;
-        boolean centricityToggle, resetDriveAngle, rightFlick, leftFlick, runPiston,
+        boolean centricityToggle, resetDriveAngle, intakeToggle = false, intakeLift, runPiston,
                 spinFastToggle = false, spinSlowToggle = false, turnHopperMagRight = false, turnHopperMagLeft = false;
         int timerCount; // to try and time a spin up during launch sequence
 
@@ -96,9 +97,12 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
             telemetry.addData("Centricity: ", centricity);
 
-            //Pin Flickers
-            leftFlick = currentGamepad2.left_bumper && !previousGamepad2.left_bumper;
-            rightFlick = currentGamepad2.right_bumper && !previousGamepad2.right_bumper;
+            //Intake
+            if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper){
+                intakeToggle = !intakeToggle;
+            }
+            intakeLift = currentGamepad2.right_bumper && !previousGamepad2.right_bumper;
+
             launchTrigger = currentGamepad2.right_trigger;
             runPiston = currentGamepad2.b && !previousGamepad2.b;
 
@@ -175,12 +179,13 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.stopHopper();
             }
 
-            //Pin Flicker
-            if(rightFlick) {
-                outtake.flickPin(Outtake.PINS.RIGHT);
+            //Intake Mechanisms
+            if(intakeToggle) {
+                intake.spinIntake();
             }
-            if(leftFlick){
-                outtake.flickPin(Outtake.PINS.LEFT);
+
+            if(intakeLift){
+                intake.lift();
             }
 
             //Piston extension
