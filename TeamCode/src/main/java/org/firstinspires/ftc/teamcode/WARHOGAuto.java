@@ -52,18 +52,18 @@ public class WARHOGAuto extends OpMode {
 
     private final Pose startPoseCloseRed = new Pose(123, 128, Math.toRadians(38)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseRed = new Pose(90, 85, Math.toRadians(100)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseRed = new Pose(88, 87, Math.toRadians(52)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose scorePoseCloseRed = new Pose(86, 85, Math.toRadians(52)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose endPoseCloseRed = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarRed = new Pose(87.5, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarRed = new Pose(86.5, 19, Math.toRadians(72)); // Second Scoring Pose of our robot.
+    private final Pose scorePoseFarRed = new Pose(86.5, 17, Math.toRadians(72)); // Second Scoring Pose of our robot.
     private final Pose endPoseFarRed = new Pose(110, 12, Math.toRadians(0)); // Second ending position outside of zone for points
 
-    private final Pose startPoseCloseBlue = new Pose(21, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
+    private final Pose startPoseCloseBlue = new Pose(22, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseBlue = new Pose(54, 85, Math.toRadians(80)); // position to check mosaic pattern from obelisk
-    private final Pose scorePoseCloseBlue = new Pose(55, 87, Math.toRadians(140)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose scorePoseCloseBlue = new Pose(58, 86, Math.toRadians(139)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose endPoseCloseBlue = new Pose(54, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarBlue = new Pose(57, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarBlue = new Pose(58, 19, Math.toRadians(113)); // Second Scoring Pose of our robot.
+    private final Pose scorePoseFarBlue = new Pose(58, 17, Math.toRadians(115)); // Second Scoring Pose of our robot.
     private final Pose endPoseFarBlue = new Pose(42, 12, Math.toRadians(180)); // Second ending position outside of zone for points
 
     private Path scorePreloadCloseRed, scorePreloadFarRed, checkCloseRed, checkCloseBlue, scorePreloadCloseBlue, scorePreloadFarBlue, leaveCloseBlue, leaveCloseRed, leaveFarBlue, leaveFarRed;
@@ -101,67 +101,90 @@ public class WARHOGAuto extends OpMode {
     }
 
     public void shootArtifacts(double speed) throws InterruptedException{
+        outtake.extendPiston();
         if (motif == MOTIF.PPG || motif == MOTIF.NONE){ //score accordingly, none default is ppg
             //spin left .5
             outtake.spinLauncherVelocity(speed);
+            sleep(300);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             //continue spin left 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             //continue spin left 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
         }
         else if (motif == MOTIF.GPP){
             //spin right .5
             outtake.spinLauncherVelocity(speed);
+            sleep(300);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             //continue spin right 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             //continue spin right 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
         }
         else if (motif == MOTIF.PGP){
             //spin left .5
             outtake.spinLauncherVelocity(speed);
+            sleep(300);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             // spin right 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
             //continue spin right 1
             outtake.spinLauncherVelocity(speed);
             outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .2);
+            outtake.retractPiston();
             sleep(1500);
             //launch
-            outtake.runPiston();
+            //outtake.runPiston();
+            outtake.extendPiston();
         }
+        sleep(1000);
     }
 
     public void buildPaths() {
@@ -286,7 +309,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.SLOW.getValue());
+                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
@@ -321,7 +344,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
+                    shootArtifacts(2100);
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
@@ -384,7 +407,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
-                    shootArtifacts(2100);
+                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
@@ -420,7 +443,7 @@ public class WARHOGAuto extends OpMode {
 
                     //SpinLaunchMotors
                     //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
-                    shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
+                    shootArtifacts(2100);
                     outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
