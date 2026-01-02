@@ -21,7 +21,7 @@ public class WARHOGTeleOp extends LinearOpMode {
         //AprilTagVision vision = new AprilTagVision(hardwareMap);
 
         //=====Set up variables=====
-        double joyx, joyy, joyz, gas, brake, baseSpeed, staticLaunchSpeed, launcherSpeed,
+        double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed,
                 hopperSpeed, hopperStickSpeed, hopperGasSpeed, pistonPos, intakePos;
         boolean centricityToggle, resetDriveAngle, intakeToggle = false, intakeLift, runPiston,
                 spinFastToggle = false, spinMediumToggle = false, spinSlowToggle = false, turnHopperMagRight = false,
@@ -30,7 +30,6 @@ public class WARHOGTeleOp extends LinearOpMode {
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
         baseSpeed = .4;
-        staticLaunchSpeed = .9;
         hopperSpeed = .3;
 
         Gamepad currentGamepad1 = new Gamepad();

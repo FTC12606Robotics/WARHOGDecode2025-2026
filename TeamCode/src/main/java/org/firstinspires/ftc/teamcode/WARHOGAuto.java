@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 import static java.lang.Math.PI;
 
-import android.health.connect.datatypes.MealType;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -49,7 +47,7 @@ public class WARHOGAuto extends OpMode {
 
     //====================FOR PEDROPATHING====================
     private Follower follower;
-    private Timer pathTimer, actionTimer, opmodeTimer;
+    private Timer pathTimer, opmodeTimer;
     private int pathState;
 
     private final Pose startPoseCloseRed = new Pose(123, 128, Math.toRadians(38)); // first start Pose of our robot, close to goal
@@ -452,7 +450,7 @@ public class WARHOGAuto extends OpMode {
 
         //"BNO055IMU" for Main, "BHI260IMU" for Pushbot
         /*try {
-            Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO Do we even need drivtrain for auto?
+            Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO Do we even need drivetrain for auto?
         } catch (InterruptedException e) {
             telemetry.addLine("Drivetrain failed to initialize");
             throw new RuntimeException(e);

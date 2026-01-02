@@ -200,12 +200,6 @@ public class Drivetrain{
 
         // TODO = Test but this should work as an 'or' operator
         switch (angle){
-            default:
-            case YAW:
-            case Z:
-            case HEADING:
-                return -orientation.getYaw(AngleUnit.RADIANS); //Neg. because Vander said math works better that way Also to optimize switch to degrees to take out the conversions elsewhere
-
             case PITCH:
             case X:
                 return orientation.getPitch(AngleUnit.RADIANS);
@@ -213,6 +207,12 @@ public class Drivetrain{
             case ROLL:
             case Y:
                 return orientation.getRoll((AngleUnit.RADIANS));
+
+            case HEADING:
+            case YAW:
+            case Z:
+            default:
+                return -orientation.getYaw(AngleUnit.RADIANS); //Neg. because Vander said math works better that way Also to optimize switch to degrees to take out the conversions elsewhere
 
         }
     }
