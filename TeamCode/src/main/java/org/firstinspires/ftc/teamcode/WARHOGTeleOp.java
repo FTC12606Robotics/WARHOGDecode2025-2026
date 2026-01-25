@@ -17,13 +17,12 @@ public class WARHOGTeleOp extends LinearOpMode {
         //=====Set up classes=====
         Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU");
         Outtake outtake = new Outtake(hardwareMap, telemetry);
-        Intake intake = new Intake(hardwareMap, telemetry);
         //AprilTagVision vision = new AprilTagVision(hardwareMap);
 
         //=====Set up variables=====
         double joyx, joyy, joyz, gas, brake, baseSpeed, launcherSpeed,
-                hopperSpeed, hopperStickSpeed, hopperGasSpeed, pistonPos, intakePos;
-        boolean centricityToggle, resetDriveAngle, intakeToggle = false, intakeLift, runPiston,
+                hopperSpeed, hopperStickSpeed, hopperGasSpeed, pistonPos;
+        boolean centricityToggle, resetDriveAngle, runPiston,
                 spinFastToggle = false, spinMediumToggle = false, spinSlowToggle = false, turnHopperMagRight = false,
                 turnHopperMagLeft = false, turning = false;
 
@@ -102,12 +101,6 @@ public class WARHOGTeleOp extends LinearOpMode {
             }
             telemetry.addData("Centricity: ", centricity);
 
-            //Intake
-            if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper){
-                intakeToggle = !intakeToggle;
-            }
-            intakeLift = currentGamepad2.right_bumper && !previousGamepad2.right_bumper;
-
             runPiston = currentGamepad2.b && !previousGamepad2.b;
 
             //set up vectors
@@ -125,7 +118,6 @@ public class WARHOGTeleOp extends LinearOpMode {
             turnHopperMagRight = currentGamepad2.dpad_right && !previousGamepad2.dpad_right;
 
             pistonPos = outtake.pistonPosition();
-            intakePos = intake.intakePosition();
 
             //limit launcher speed
             if (abs(launcherSpeed) > .9){
@@ -194,21 +186,6 @@ public class WARHOGTeleOp extends LinearOpMode {
                 outtake.stopHopper();
             }
 
-            //Intake Mechanisms
-            if(intakeToggle) {
-                intake.spinIntake();
-            }
-
-            if(intakeLift){
-                /*if (intakePos >= .1){
-                    intake.lower();
-                }
-                else{
-                    intake.lift();
-                }*/
-                intake.runIntake();
-            }
-
             //Piston extension
             if (runPiston){
                 if (pistonPos >= .1){
@@ -224,7 +201,6 @@ public class WARHOGTeleOp extends LinearOpMode {
             //end step
             telemetry.update();
             outtake.update();
-            //intake.update();
         }
 
     }
