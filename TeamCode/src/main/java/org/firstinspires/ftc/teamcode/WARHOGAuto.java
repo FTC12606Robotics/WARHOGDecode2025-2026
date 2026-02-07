@@ -37,8 +37,6 @@ public class WARHOGAuto extends OpMode {
     double speed = .50;
     double startSleep = 0; //How many seconds to wait before starting the autonomous routine
 
-    double hopperRotationMSec = 1000; // approx milli seconds to rotate hopper 1 position at .2 speed
-
     //Set Default
     private MOTIF motif = MOTIF.NONE;
     private STARTPOS startPos = STARTPOS.GOAL;
@@ -55,8 +53,8 @@ public class WARHOGAuto extends OpMode {
     private final Pose scorePoseCloseRed = new Pose(86, 85, Math.toRadians(52)); // first Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose endPoseCloseRed = new Pose(90, 134.5, Math.toRadians(90)); // First ending position outside of zone for points
     private final Pose startPoseFarRed = new Pose(87.5, 8, Math.toRadians(90)); // Second start position of our robot, far from goal
-    private final Pose scorePoseFarRed = new Pose(86.5, 17, Math.toRadians(72)); // Second Scoring Pose of our robot.
-    private final Pose endPoseFarRed = new Pose(110, 12, Math.toRadians(0)); // Second ending position outside of zone for points
+    private final Pose scorePoseFarRed = new Pose(86.5, 17, Math.toRadians(70)); // Second Scoring Pose of our robot.
+    private final Pose endPoseFarRed = new Pose(106, 12, Math.toRadians(0)); // Second ending position outside of zone for points
 
     private final Pose startPoseCloseBlue = new Pose(22, 128, Math.toRadians(142)); // first start Pose of our robot, close to goal
     private final Pose checkPoseCloseBlue = new Pose(54, 85, Math.toRadians(80)); // position to check mosaic pattern from obelisk
@@ -185,6 +183,7 @@ public class WARHOGAuto extends OpMode {
             outtake.extendPiston();
         }
         sleep(1000);
+        outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
     }
 
     public void buildPaths() {
@@ -305,12 +304,9 @@ public class WARHOGAuto extends OpMode {
             case 2:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
                 if(!follower.isBusy()) {
-                    /* TODO Score Artifacts */
 
-                    //SpinLaunchMotors
-                    //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
+                    //Score Artifacts
                     shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
-                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseRed,true);
@@ -340,12 +336,9 @@ public class WARHOGAuto extends OpMode {
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
-                    /* TODO Score Sample */
 
-                    //SpinLaunchMotors
-                    //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
+                    //Score
                     shootArtifacts(2100);
-                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarRed,true); //TODO figure out how this works
@@ -403,12 +396,9 @@ public class WARHOGAuto extends OpMode {
             case 9:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
                 if(!follower.isBusy()) {
-                    /* TODO Score Artifacts */
 
-                    //SpinLaunchMotors
-                    //outtake.spinLauncherVelocity(Outtake.TICKSPEED.SLOW); //Can change based on close/far now
+                    //Score Artifacts
                     shootArtifacts(Outtake.TICKSPEED.MEDIUM.getValue());
-                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(endCloseBlue,true);
@@ -439,12 +429,9 @@ public class WARHOGAuto extends OpMode {
             case 12:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
-                    /* TODO Score Artifacts */
 
-                    //SpinLaunchMotors
-                    //outtake.spinLauncherVelocity(Outtake.TICKSPEED.MEDIUM); //Can change based on close/far now
+                    //Score Artifacts
                     shootArtifacts(2100);
-                    outtake.spinLauncherVelocity(Outtake.TICKSPEED.OFF);
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(endFarBlue,true); //TODO figure out how this works
@@ -471,13 +458,6 @@ public class WARHOGAuto extends OpMode {
     @Override
     public void init() {
 
-        //"BNO055IMU" for Main, "BHI260IMU" for Pushbot
-        /*try {
-            Drivetrain drivetrain = new Drivetrain(hardwareMap, telemetry, "BNO055IMU"); // TODO Do we even need drivetrain for auto?
-        } catch (InterruptedException e) {
-            telemetry.addLine("Drivetrain failed to initialize");
-            throw new RuntimeException(e);
-        }*/
         aprilTagVision = new AprilTagVision(hardwareMap);
         outtake = new Outtake(hardwareMap, telemetry);
 
@@ -567,8 +547,8 @@ public class WARHOGAuto extends OpMode {
 
         telemetry.addData("color (x/b)", color);
         telemetry.addData("launchPos (lbump)", startPos);
-        telemetry.addData("leave (rbump)", leave);
-        telemetry.addData("Speed (a/y)", speed);
+        telemetry.addData("only leave (rbump)", leave);
+        //telemetry.addData("Speed (a/y)", speed);
         telemetry.addData("startSleep (up/down)", startSleep);
         //telemetry.addData("Heading: ", follower.getHeading());
         telemetry.addLine();
@@ -629,7 +609,7 @@ public class WARHOGAuto extends OpMode {
     public void loop() {
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
-        try { //TODO see if this affects anything, it is because outtake needing to spin hopper based on time.
+        try { //TODO see if this affects anything, it is because outtake needing sleeps.
             autonomousPathUpdate();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -639,7 +619,7 @@ public class WARHOGAuto extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading()*180/PI);
-        //telemetry.addData("launcher speed", outtake.getSpinPower(1));
+        telemetry.addData("launcher speed", outtake.getSpinPower(1));
         telemetry.addData("Motif: ", motif);
         telemetry.update();
     }
