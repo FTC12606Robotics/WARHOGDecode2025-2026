@@ -45,8 +45,6 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
                 // Swallow the possible exception, it should not happen as
                 // currentGamepad1/2 are being copied from valid Gamepads.
             }
-            telemetry.addLine("Init complete");
-            telemetry.update();
         }
 
         while(opModeIsActive()){
@@ -69,7 +67,7 @@ public class WARHOGTeleOpPushbot extends LinearOpMode {
 
             //inputs that toggle the modes
             centricityToggle = currentGamepad1.dpad_down && !previousGamepad1.dpad_down; //change whether the drive is bot or field centric
-            resetDriveAngle = currentGamepad1.dpad_up; //use when the robot is facing away from you
+            resetDriveAngle = currentGamepad1.dpad_up && !previousGamepad1.dpad_up; //use when the robot is facing away from you
 
             //code to switch between field centric and bot centric drive
             if(centricityToggle){
