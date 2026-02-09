@@ -29,7 +29,7 @@ public class WARHOGTeleOp extends LinearOpMode {
         Drivetrain.Centricity centricity = Drivetrain.Centricity.FIELD;
 
         baseSpeed = .4;
-        hopperSpeed = .3;
+        hopperSpeed = .4;
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -164,25 +164,26 @@ public class WARHOGTeleOp extends LinearOpMode {
 
             //Spin Hopper
             //'turning' is the override TODO
-            if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
+            if (turning && hopperStickSpeed != 0) {
                 outtake.turningOverride();
-                outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
                 turning = false;
+            }
+
+            if (hopperStickSpeed < 0) { //Using hopper stick speed really just to get direction
+                outtake.spinHopper(Outtake.HOPPERDIRECTION.LEFT, hopperSpeed);
             }
             else if (hopperStickSpeed > 0){
                 outtake.spinHopper(Outtake.HOPPERDIRECTION.RIGHT, hopperSpeed);
-                outtake.turningOverride();
-                turning = false;
             }
             else if (turnHopperMagLeft) {
-                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.LEFT, .5);
+                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.LEFT, .5);
                 turning = true;
             }
             else if (turnHopperMagRight) {
-                outtake.turnHopperMagAuto(Outtake.HOPPERDIRECTION.RIGHT, .5);
+                outtake.turnHopperMag(Outtake.HOPPERDIRECTION.RIGHT, .5);
                 turning = true;
             }
-            else if (!turning) {
+            else if (!turning) { //Stop the hopper when stick is 0
                 outtake.stopHopper();
             }
 
